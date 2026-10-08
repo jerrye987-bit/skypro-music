@@ -1,0 +1,272 @@
+[
+  {
+    "id": 1,
+    "title": "Ты та…",
+    "author": "Баста",
+    "album": "Баста 5",
+    "time": "4:44",
+    "track_file": "/tracks/basta_you_are.mp3",
+    "track_logo": "/img/track01.png"
+  },
+  {
+    "id": 2,
+    "title": "Gimme the Prize",
+    "author": "Queen",
+    "album": "A Kind of Magic",
+    "time": "3:43",
+    "track_file": "/tracks/queen_gimme_the_prize.mp3",
+    "track_logo": "/img/track02.png"
+  },
+  {
+    "id": 3,
+    "title": "Kashmir",
+    "author": "Led Zeppelin",
+    "album": "Physical Graffiti",
+    "time": "3:41",
+    "track_file": "/tracks/led_zeppelin_kashmir.mp3",
+    "track_logo": "/img/track03.png"
+  },
+  {
+    "id": 4,
+    "title": "Highway to Hell",
+    "author": "AC/DC",
+    "album": "Highway to Hell",
+    "time": "3:15",
+    "track_file": "/tracks/acdc_highway_to_hell.mp3",
+    "track_logo": "/img/track04.png"
+  },
+  {
+    "id": 5,
+    "title": "Smells Like Teen Spirit",
+    "author": "Nirvana",
+    "album": "Nevermind",
+    "time": "4:25",
+    "track_file": "/tracks/nirvana_smells_like_teen_spirit.mp3",
+    "track_logo": "/img/track05.png"
+  },
+  {
+    "id": 6,
+    "title": "Back in Black",
+    "author": "AC/DC",
+    "album": "Back in Black",
+    "time": "4:56",
+    "track_file": "/tracks/acdc_back_in_black.mp3",
+    "track_logo": "/img/track06.png"
+  },
+  {
+    "id": 7,
+    "title": "Bohemian Rhapsody",
+    "author": "Queen",
+    "album": "A Night at the Opera",
+    "time": "4:46",
+    "track_file": "/tracks/queen_bohemian_rhapsody.mp3",
+    "track_logo": "/img/track07.png"
+  },
+  {
+    "id": 8,
+    "title": "Stairway to Heaven",
+    "author": "Led Zeppelin",
+    "album": "Led Zeppelin IV",
+    "time": "4:02",
+    "track_file": "/tracks/led_zeppelin_stairway_to_heaven.mp3",
+    "track_logo": "/img/track08.png"
+  },
+  {
+    "id": 9,
+    "title": "Thunderstruck",
+    "author": "AC/DC",
+    "album": "The Razors Edge",
+    "time": "4:25",
+    "track_file": "/tracks/acdc_thunderstruck.mp3",
+    "track_logo": "/img/track09.png"
+  },
+  {
+    "id": 10,
+    "title": "Come As You Are",
+    "author": "Nirvana",
+    "album": "Nevermind",
+    "time": "3:44",
+    "track_file": "/tracks/nirvana_come_as_you_are.mp3",
+    "track_logo": "/img/track10.png"
+  },
+  {
+    "id": 11,
+    "title": "Don't Stop Me Now",
+    "author": "Queen",
+    "album": "Jazz",
+    "time": "3:26",
+    "track_file": "/tracks/queen_dont_stop_me_now.mp3",
+    "track_logo": "/img/track11.png"
+  },
+  {
+    "id": 12,
+    "title": "Whole Lotta Love",
+    "author": "Led Zeppelin",
+    "album": "Led Zeppelin II",
+    "time": "4:44",
+    "track_file": "/tracks/led_zeppelin_whole_lotta_love.mp3",
+    "track_logo": "/img/track12.png"
+  },
+  {
+    "id": 13,
+    "title": "Hells Bells",
+    "author": "AC/DC",
+    "album": "Back in Black",
+    "time": "4:44",
+    "track_file": "/tracks/acdc_hells_bells.mp3",
+    "track_logo": "/img/track13.png"
+  },
+  {
+    "id": 14,
+    "title": "Heart-Shaped Box",
+    "author": "Nirvana",
+    "album": "In Utero",
+    "time": "4:44",
+    "track_file": "/tracks/nirvana_heart_shaped_box.mp3",
+    "track_logo": "/img/track14.png"
+  },
+  {
+    "id": 15,
+    "title": "Somebody to Love",
+    "author": "Queen",
+    "album": "A Day at the Races",
+    "time": "4:44",
+    "track_file": "/tracks/queen_somebody_to_love.mp3",
+    "track_logo": "/img/track15.png"
+  },
+  {
+    "id": 16,
+    "title": "Immigrant Song",
+    "author": "Led Zeppelin",
+    "album": "Led Zeppelin III",
+    "time": "4:44",
+    "track_file": "/tracks/led_zeppelin_immigrant_song.mp3",
+    "track_logo": "/img/track16.png"
+  },
+  {
+    "id": 17,
+    "title": "TNT",
+    "author": "AC/DC",
+    "album": "TNT",
+    "time": "4:44",
+    "track_file": "/tracks/acdc_tnt.mp3",
+    "track_logo": "/img/track17.png"
+  },
+  {
+    "id": 18,
+    "title": "Lithium",
+    "author": "Nirvana",
+    "album": "Nevermind",
+    "time": "4:44",
+    "track_file": "/tracks/nirvana_lithium.mp3",
+    "track_logo": "/img/track18.png"
+  },
+  {
+    "id": 19,
+    "title": "Under Pressure",
+    "author": "Queen",
+    "album": "Hot Space",
+    "time": "4:44",
+    "track_file": "/tracks/queen_under_pressure.mp3",
+    "track_logo": "/img/track19.png"
+  },
+  {
+    "id": 20,
+    "title": "Black Dog",
+    "author": "Led Zeppelin",
+    "album": "Led Zeppelin IV",
+    "time": "4:44",
+    "track_file": "/tracks/led_zeppelin_black_dog.mp3",
+    "track_logo": "/img/track20.png"
+  },
+  {
+    "id": 21,
+    "title": "Rock and Roll Ain't Noise Pollution",
+    "author": "AC/DC",
+    "album": "Back in Black",
+    "time": "4:44",
+    "track_file": "/tracks/acdc_rock_and_roll.mp3",
+    "track_logo": "/img/track21.png"
+  },
+  {
+    "id": 22,
+    "title": "In Bloom",
+    "author": "Nirvana",
+    "album": "Nevermind",
+    "time": "4:44",
+    "track_file": "/tracks/nirvana_in_bloom.mp3",
+    "track_logo": "/img/track22.png"
+  },
+  {
+    "id": 23,
+    "title": "We Will Rock You",
+    "author": "Queen",
+    "album": "News of the World",
+    "time": "4:44",
+    "track_file": "/tracks/queen_we_will_rock_you.mp3",
+    "track_logo": "/img/track23.png"
+  },
+  {
+    "id": 24,
+    "title": "Dazed and Confused",
+    "author": "Led Zeppelin",
+    "album": "Led Zeppelin I",
+    "time": "4:44",
+    "track_file": "/tracks/led_zeppelin_dazed_and_confused.mp3",
+    "track_logo": "/img/track24.png"
+  },
+  {
+    "id": 25,
+    "title": "For Those About to Rock",
+    "author": "AC/DC",
+    "album": "For Those About to Rock",
+    "time": "4:44",
+    "track_file": "/tracks/acdc_for_those_about_to_rock.mp3",
+    "track_logo": "/img/track25.png"
+  },
+  {
+    "id": 26,
+    "title": "Stay Away",
+    "author": "Nirvana",
+    "album": "Nevermind",
+    "time": "4:44",
+    "track_file": "/tracks/nirvana_stay_away.mp3",
+    "track_logo": "/img/track26.png"
+  },
+  {
+    "id": 27,
+    "title": "Radio Ga Ga",
+    "author": "Queen",
+    "album": "The Works",
+    "time": "4:44",
+    "track_file": "/tracks/queen_radio_ga_ga.mp3",
+    "track_logo": "/img/track27.png"
+  },
+  {
+    "id": 28,
+    "title": "Rock and Roll",
+    "author": "Led Zeppelin",
+    "album": "Led Zeppelin IV",
+    "time": "4:44",
+    "track_file": "/tracks/led_zeppelin_rock_and_roll.mp3",
+    "track_logo": "/img/track28.png"
+  },
+  {
+    "id": 29,
+    "title": "Dirty Deeds Done Dirt Cheap",
+    "author": "AC/DC",
+    "album": "Dirty Deeds Done Dirt Cheap",
+    "time": "4:44",
+    "track_file": "/tracks/acdc_dirty_deeds.mp3",
+    "track_logo": "/img/track29.png"
+  },
+  {
+    "id": 30,
+    "title": "Breed",
+    "author": "Nirvana",
+    "album": "Nevermind",
+    "time": "4:44",
+    "track_file": "/tracks/nirvana_breed.mp3",
+    "track_logo": "/img/track30.png"
+  }
+]
