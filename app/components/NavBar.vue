@@ -1,0 +1,89 @@
+<template>
+  <nav class="main__nav">
+    <div class="nav__logo">
+      <img width="250" height="170" class="logo__image" src="/img/logo.png" alt="logo">
+    </div>
+    <div class="nav__burger">
+      <span class="burger__line" />
+      <span class="burger__line" />
+      <span class="burger__line" />
+    </div>
+    <div class="nav__menu">
+      <ul class="menu__list">
+        <li class="menu__item">
+          <NuxtLink to="/" class="menu__link">Главное</NuxtLink>
+        </li>
+        <li class="menu__item">
+          <NuxtLink to="/playlist" class="menu__link">Мой плейлист</NuxtLink>
+        </li>
+        <li class="menu__item">
+          <NuxtLink to="/signin" class="menu__link">Войти</NuxtLink>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</template>
+
+<script setup></script>
+
+<style scoped>
+.main__nav {
+  width: 244px;
+  background-color: #181818;
+  padding: 20px 0 20px 36px;
+}
+
+.nav__logo {
+  width: 113.33px;
+  height: 43px;
+  padding: 13px 0;
+  background-color: transparent;
+  margin-bottom: 20px;
+}
+
+.nav__burger {
+  width: 20px;
+  height: 40px;
+  padding: 13px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.nav__menu {
+  display: block;
+  visibility: visible;
+}
+
+.logo__image {
+  width: 113.33px;
+  height: 17px;
+  color: #181818;
+}
+
+.burger__line {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #d3d3d3;
+  flex-shrink: 0;
+}
+
+.menu__list {
+  list-style: none;
+  padding: 18px 0 10px 0;
+  margin: 0;
+}
+
+.menu__item {
+  padding: 5px 0;
+  margin-bottom: 16px;
+}
+
+.menu__link {
+  color: #ffffff;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+}
+</style>
