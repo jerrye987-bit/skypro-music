@@ -5,7 +5,7 @@
         <form :class="$style.modal__form" @submit.prevent="handleSubmit">
           <RouterLink to="/">
             <div :class="$style.modal__logo">
-              <img src="/img/logo_modal.png" alt="logo" />
+              <img src="/img/logo_modal.svg" alt="logo" />
             </div>
           </RouterLink>
           <input
