@@ -4,7 +4,7 @@
       <div class="track__title">
         <div class="track__titleImage">
           <svg class="track__titleSvg">
-            <use xlink:href="/img/icon/sprite.svg#icon-note"></use>
+            <use xlink:href="/img/icon/sprite.svg#icon-note" />
           </svg>
         </div>
         <div class="track__title-text">
@@ -22,7 +22,7 @@
       </div>
       <div class="track__time">
         <svg class="track__timeSvg">
-          <use xlink:href="/img/icon/sprite.svg#icon-like"></use>
+          <use xlink:href="/img/icon/sprite.svg#icon-like" />
         </svg>
         <span class="track__timeText">{{ track.time }}</span>
       </div>
