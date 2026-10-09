@@ -1,33 +1,33 @@
 <template>
   <div class="bar">
     <div class="bar__content">
-      <div class="bar__playerProgress"></div>
+      <div class="bar__playerProgress" />
       <div class="bar__playerBlock">
         <div class="bar__player">
           <div class="player__controls">
             <div class="player__btnPrev">
               <svg class="player__btnPrevSvg">
-                <use xlink:href="/img/icon/sprite.svg#icon-prev"></use>
+                <use xlink:href="/img/icon/sprite.svg#icon-prev" />
               </svg>
             </div>
             <div class="player__btnPlay btn">
               <svg class="player__btnPlaySvg">
-                <use xlink:href="/img/icon/sprite.svg#icon-play"></use>
+                <use xlink:href="/img/icon/sprite.svg#icon-play" />
               </svg>
             </div>
             <div class="player__btnNext">
               <svg class="player__btnNextSvg">
-                <use xlink:href="/img/icon/sprite.svg#icon-next"></use>
+                <use xlink:href="/img/icon/sprite.svg#icon-next" />
               </svg>
             </div>
             <div class="player__btnRepeat btnIcon">
               <svg class="player__btnRepeatSvg">
-                <use xlink:href="/img/icon/sprite.svg#icon-repeat"></use>
+                <use xlink:href="/img/icon/sprite.svg#icon-repeat" />
               </svg>
             </div>
             <div class="player__btnShuffle btnIcon">
               <svg class="player__btnShuffleSvg">
-                <use xlink:href="/img/icon/sprite.svg#icon-shuffle"></use>
+                <use xlink:href="/img/icon/sprite.svg#icon-shuffle" />
               </svg>
             </div>
           </div>
@@ -36,7 +36,7 @@
             <div class="trackPlay__contain">
               <div class="trackPlay__image">
                 <svg class="trackPlay__svg">
-                  <use xlink:href="/img/icon/sprite.svg#icon-note"></use>
+                  <use xlink:href="/img/icon/sprite.svg#icon-note" />
                 </svg>
               </div>
               <div class="trackPlay__author">
@@ -49,7 +49,7 @@
             <div class="trackPlay__likeDis">
               <div class="trackPlay__like btnIcon">
                 <svg class="trackPlay__likeSvg">
-                  <use xlink:href="/img/icon/sprite.svg#icon-like"></use>
+                  <use xlink:href="/img/icon/sprite.svg#icon-like" />
                 </svg>
               </div>
             </div>
@@ -60,11 +60,11 @@
           <div class="volume__content">
             <div class="volume__image">
               <svg class="volume__svg">
-                <use xlink:href="/img/icon/sprite.svg#icon-volume"></use>
+                <use xlink:href="/img/icon/sprite.svg#icon-volume" />
               </svg>
             </div>
             <div class="volume__progress btn">
-              <input class="volume__progressLine btn" type="range" name="range" />
+              <input class="volume__progressLine btn" type="range" name="range" >
             </div>
           </div>
         </div>

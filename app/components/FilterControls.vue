@@ -2,15 +2,15 @@
   <div class="centerblock__header">
     <div class="centerblock__search">
       <svg class="search__svg">
-        <use xlink:href="/img/icon/sprite.svg#icon-search"></use>
+        <use xlink:href="/img/icon/sprite.svg#icon-search" />
       </svg>
       <input
+        v-model="searchQuery"
         class="search__text"
         type="search"
         placeholder="Поиск"
         name="search"
-        v-model="searchQuery"
-      />
+      >
     </div>
   </div>
   <h2 class="centerblock__h2">Треки</h2>

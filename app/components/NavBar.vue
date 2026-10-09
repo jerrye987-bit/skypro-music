@@ -1,7 +1,7 @@
 <template>
   <nav class="main__nav">
     <div class="nav__logo">
-      <img width="250" height="170" class="logo__image" src="/img/logo.svg" alt="logo" />
+      <img width="250" height="170" class="logo__image" src="/img/logo.svg" alt="logo" >
     </div>
     <div class="nav__burger">
       <span class="burger__line" />
