@@ -10,11 +10,16 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "nuxt": "4.5.2",
+    "braces": "^3.0.3",
+    "devalue": "^6.0.2",
+    "esbuild": "^0.28.2",
+    "nuxt": "^3.7.4",
+    "tar": "^7.5.22",
     "vue": "3.5.43"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.17.0",
-    "eslint": "^10.12.0"
+    "eslint": "^10.12.0",
+    "glob": "^13.0.6"
   }
 }

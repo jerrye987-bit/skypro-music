@@ -10,14 +10,14 @@
         </svg>
       </div>
     </div>
-    <div class="content__playlist">
-      <TrackItem v-for="track in tracks" :key="track.id" :track="track" />
-    </div>
+
+    <!-- Добавляем компонент для отображения треков -->
+    <TrackList />
   </div>
 </template>
 
 <script setup>
-const { data: tracks } = await useFetch('/tracks.json', { server: false })
+ import TrackList from './TrackList.vue';  // Импортируем компонент
 </script>
 
 <style scoped>
