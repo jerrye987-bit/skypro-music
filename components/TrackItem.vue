@@ -111,7 +111,7 @@ defineProps({
 }
 
 .track__author {
-  flex: 0 1 321px;
+  flex: 0 1 315px;
   min-width: 0;
   display: flex;
   justify-content: flex-start;
@@ -126,8 +126,9 @@ defineProps({
 }
 
 .track__album {
-  flex: 0 1 245px;
+  flex: 0 1 215px;
   min-width: 0;
+  justify-content: flex-start;
 }
 
 .track__albumLink {

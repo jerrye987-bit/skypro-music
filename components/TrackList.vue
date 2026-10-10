@@ -1,15 +1,11 @@
 <script setup>
-import { useTracks } from '@/composables/useTracks';
+import { useTracks } from '@/composables/useTracks'
 
-const { tracks,
-  loading,
-  error,
-  fetchTracks
-} = useTracks();
+const { tracks, loading, error, fetchTracks } = useTracks()
 
 onMounted(() => {
-  fetchTracks();
-});
+  fetchTracks()
+})
 </script>
 
 <template>
@@ -36,8 +32,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.loading, .error {
-  padding: 20px;
-  text-align: center;
-}
+  .loading, .error {
+    padding: 20px;
+    text-align: center;
+  }
 </style>
