@@ -10,10 +10,12 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@pinia/nuxt": "^1.0.2",
     "braces": "^3.0.3",
     "devalue": "^6.0.2",
     "esbuild": "^0.28.2",
     "nuxt": "^3.7.4",
+    "pinia": "^4.0.3",
     "tar": "^7.5.22",
     "vue": "3.5.43"
   },
