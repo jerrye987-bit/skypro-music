@@ -69,14 +69,20 @@ export function useAudioPlayer() {
   // Обновляем прогресс трека
   const handleTimeUpdate = () => {
     if (!playerStore.audioRef) return
+
     const currentTime = playerStore.audioRef.currentTime
     const duration = playerStore.audioRef.duration
-    console.log(duration)
+
     if (duration) {
       const progress = (currentTime / duration) * 100
       playerStore.setProgress(progress)
     }
+
+    if (duration - currentTime < 0.5 && playerStore.isPlaying) {
+      playerStore.setPlaying(false)
+    }
   }
+
   // Перематываем
   const seekTo = (percentage) => {
     if (!playerStore.audioRef || !playerStore.currentTrack) return
