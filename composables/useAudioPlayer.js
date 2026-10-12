@@ -1,10 +1,8 @@
 import { usePlayerStore } from '~/stores/player'
 
 export function useAudioPlayer() {
-  // Получаем store, чтобы менять данные в хранилище
   const playerStore = usePlayerStore()
 
-  // Инициализируем плеер в самом начале
   const initPlayer = (element) => {
     if (!element) {
       console.error('Плеера нет :(')
@@ -13,22 +11,59 @@ export function useAudioPlayer() {
     playerStore.setAudioRef(element)
   }
 
-  // Воспроизводим трек
+  // Плей\Пауза
   const playTrack = async (track) => {
     if (!playerStore.audioRef) {
-      console.error('Плеер не инициализирован')
+      console.error('Плеер не инициализирован: audioRef отсутствует')
       return
     }
 
-    try {
+    if (!playerStore.currentTrack) {
       playerStore.setCurrentTrack(track)
       playerStore.audioRef.src = track.track_file
-      await playerStore.audioRef.play()
-      playerStore.setPlaying(true)
-    } catch (error) {
-      console.error('Ошибка воспроизведения:', error)
-      playerStore.setPlaying(false)
+      try {
+        await playerStore.audioRef.play()
+        playerStore.setPlaying(true)
+      } catch (e) {
+        console.error('Ошибка запуска нового трека', e)
+        playerStore.setPlaying(false)
+      }
+      return
     }
+
+    const isSameTrack = playerStore.currentTrack.track_file === track.track_file
+
+    if (isSameTrack && playerStore.isPlaying) {
+      playerStore.audioRef.pause()
+      playerStore.setPlaying(false)
+      return
+    }
+
+    if (isSameTrack && !playerStore.isPlaying) {
+      try {
+        await playerStore.audioRef.play()
+        playerStore.setPlaying(true)
+      } catch (e) {
+        console.error('Ошибка продолжения воспроизведения', e)
+        playerStore.setPlaying(false)
+      }
+      return
+    }
+
+    playerStore.setCurrentTrack(track)
+    playerStore.audioRef.src = track.track_file
+    playerStore.audioRef.load()
+
+    setTimeout(async () => {
+      try {
+        await playerStore.audioRef.play()
+        playerStore.setPlaying(true)
+        console.log('✅ Новый трек начал играть')
+      } catch (e) {
+        console.error('Ошибка play() для нового трека', e)
+        playerStore.setPlaying(false)
+      }
+    }, 100)
   }
 
   // Обновляем прогресс трека
