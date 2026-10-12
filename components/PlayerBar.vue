@@ -2,8 +2,15 @@
   <div class="bar">
     <div class="bar__content">
       <div class="bar__playerProgress" @click="handleProgressClick">
-        <div class="bar_player-progress-line" :style="{ width: playerStore.progress + '%' }" />
-      </div>
+  <!-- Фон всей полосы (тёмно‑серый) -->
+  <div class="bar__progress-bg" />
+
+  <!-- Цветная часть, которая растёт по ходу трека -->
+  <div
+    class="bar__progress-fill"
+    :style="{ width: playerStore.progress + '%' }"
+  />
+</div>
       <div class="bar__playerBlock">
         <div class="bar__player player">
           <div class="player__controls">
@@ -91,14 +98,14 @@
 <script setup>
 import { usePlayerStore } from '~/stores/player'
 import { useAudioPlayer } from '~/composables/useAudioPlayer'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick, computed } from 'vue'
 
 const playerStore = usePlayerStore()
 const audioRef = ref(null)
 
-const playIconPath = playerStore.isPlaying
-  ? '/img/icon/sprite.svg#icon-pause'
-  : '/img/icon/sprite.svg#icon-play'
+const playIconPath = computed(() =>
+  playerStore.isPlaying ? '/img/icon/sprite.svg#icon-pause' : '/img/icon/sprite.svg#icon-play',
+)
 
 const { playTrack, handleTimeUpdate, seekTo, updateVolume, initPlayer } = useAudioPlayer()
 
@@ -123,8 +130,13 @@ const handleProgressClick = (event) => {
   seekTo(percentage)
 }
 
-onMounted(() => {
-  initPlayer(audioRef.value)
+onMounted(async () => {
+  await nextTick()
+  if (audioRef.value) {
+    initPlayer(audioRef.value)
+  } else {
+    console.error('audioRef не найден в DOM!')
+  }
 })
 </script>
 
@@ -140,6 +152,33 @@ onMounted(() => {
 .bar__content {
   display: flex;
   flex-direction: column;
+}
+
+.bar__playerProgress {
+  width: 100%;
+  height: 5px;
+  position: relative;
+  background-color: #2e2e2e; /* твой тёмно‑серый фон */
+  border-radius: 3px;
+}
+
+.bar__progress-bg {
+  /* можно оставить пустым: фон уже задан у родителя */
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.bar__progress-fill {
+  height: 100%;
+  background-color:#4E4E4E;
+; /* цвет заполнения — поменяй на свой */
+  border-radius: 3px;
+  transition: width 0.1s linear; /* плавная анимация полоски */
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
 .bar__playerProgress {

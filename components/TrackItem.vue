@@ -8,42 +8,53 @@
           </svg>
         </div>
         <div class="track__title-text">
-          <a class="track__titleLink" href="">
-            {{ track.title }}
-            <span class="track__titleSpan">{{ track.name || 'Нет подзаголовка' }}</span>
+          <a class="track__titleLink" role="button" tabindex="0" @click.stop="handlePlay">
+            {{ track?.name || 'Нет названия' }}
+            <span class="track__titleSpan">{{ track?.subtitle }}</span>
           </a>
         </div>
       </div>
+
+      <!-- Исполнитель -->
       <div class="track__author">
-        <a class="track__authorLink" href="">{{ track.author || 'Неизвестный исполнитель' }}</a>
+        <a class="track__authorLink" role="button" tabindex="0" @click.stop="handlePlay">
+          {{ track?.author || 'Неизвестный' }}
+        </a>
       </div>
+
+      <!-- Альбом -->
       <div class="track__album">
-        <a class="track__albumLink" href="">{{ track.album || 'Без альбома' }}</a>
+        <a class="track__albumLink" role="button" tabindex="0" @click.stop="handlePlay">
+          {{ track?.album || 'Без альбома' }}
+        </a>
       </div>
+
+      <!-- Лайк и время -->
       <div class="track__time">
         <svg class="track__timeSvg">
           <use xlink:href="/img/icon/sprite.svg#icon-like" />
         </svg>
-        <span class="track__timeText">{{ track.time || '00:00' }}</span>
+        <span class="track__timeText">{{ track?.time || '00:00' }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps({
+import { defineProps, defineEmits } from 'vue'
+
+const props = defineProps({
   track: {
     type: Object,
-    required: false,
-    default: () => ({
-      title: '',
-      artist: '',
-      album: '',
-      duration: '',
-      subtitle: '',
-    }),
+    required: true,
   },
 })
+
+const emit = defineEmits(['play'])
+
+const handlePlay = () => {
+  emit('play', props.track)
+}
 </script>
 
 <style scoped>
@@ -51,10 +62,7 @@ defineProps({
 .track__authorLink,
 .track__albumLink {
   text-decoration: none;
-}
-
-.playlist__track {
-  font-family: 'Montserrat', sans-serif;
+  color: inherit;
 }
 
 .playlist__item {
@@ -64,6 +72,7 @@ defineProps({
 }
 
 .playlist__track {
+  font-family: 'Montserrat', sans-serif;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -83,6 +92,7 @@ defineProps({
   height: 51px;
   padding: 16px;
   background: #313131;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -94,6 +104,7 @@ defineProps({
   height: 17px;
   fill: transparent;
   stroke: #4e4e4e;
+  cursor: pointer;
 }
 
 .track__titleLink {
@@ -101,20 +112,22 @@ defineProps({
   font-size: 16px;
   line-height: 24px;
   color: #ffffff;
+  cursor: pointer;
 }
 
 .track__titleSpan {
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
-  color: #ffffff;
+  color: #4e4e4e;
 }
 
 .track__author {
-  flex: 0 1 315px;
+  flex: 0 1 321px;
   min-width: 0;
   display: flex;
   justify-content: flex-start;
+  padding-left: 10px;
 }
 
 .track__authorLink {
@@ -123,12 +136,13 @@ defineProps({
   line-height: 24px;
   color: #ffffff;
   text-align: left;
+  cursor: pointer;
 }
 
 .track__album {
-  flex: 0 1 215px;
+  flex: 0 1 245px;
   min-width: 0;
-  justify-content: flex-start;
+  padding-left: 10px;
 }
 
 .track__albumLink {
@@ -136,13 +150,15 @@ defineProps({
   font-size: 16px;
   line-height: 24px;
   color: #696969;
+  cursor: pointer;
 }
 
 .track__time {
+  flex: 0 0 60px;
   display: flex;
   align-items: center;
-  gap: 17px; /* Отступ между иконкой и временем */
-  flex: 0 0 auto; /* Фиксируем ширину */
+  justify-content: flex-end; /* прижимаем к правому краю колонки */
+  gap: 8px;
 }
 
 .track__timeSvg {
@@ -151,13 +167,14 @@ defineProps({
   margin-right: 17px;
   fill: transparent;
   stroke: #696969;
+  cursor: pointer;
 }
 
 .track__timeText {
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
-  text-align: right;
   color: #696969;
+  text-align: right;
 }
 </style>
