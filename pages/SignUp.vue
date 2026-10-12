@@ -41,11 +41,9 @@
 
 <script setup>
 import { ref } from 'vue'
-// import { useRouter } from 'vue-router'
 import styles from '@/assets/signup.module.css'
 
 const $style = styles
-// const router = useRouter()
 const email = ref('')
 const password = ref('')
 const repeatPassword = ref('')

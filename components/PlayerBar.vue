@@ -2,10 +2,8 @@
   <div class="bar">
     <div class="bar__content">
       <div class="bar__playerProgress" @click="handleProgressClick">
-  <!-- Фон всей полосы (тёмно‑серый) -->
   <div class="bar__progress-bg" />
 
-  <!-- Цветная часть, которая растёт по ходу трека -->
   <div
     class="bar__progress-fill"
     :style="{ width: playerStore.progress + '%' }"
@@ -119,14 +117,9 @@ const handleProgressClick = (event) => {
   if (!playerStore.currentTrack) return
 
   const progressBar = event.currentTarget
-  // узнаём, где конкретно мы кликнули
   const clickPosition = event.offsetX
-  // получаем общую ширину бара
   const progressBarWidth = progressBar.offsetWidth
-  // и узнаем процентное соотношение клика к общей ширине.
-  // если в середине - 50%, значит нам нужна половина трека
   const percentage = (clickPosition / progressBarWidth) * 100
-  // передаём это значение в хук, чтобы он обновил значение в хранилище
   seekTo(percentage)
 }
 
@@ -158,12 +151,11 @@ onMounted(async () => {
   width: 100%;
   height: 5px;
   position: relative;
-  background-color: #2e2e2e; /* твой тёмно‑серый фон */
+  background-color: #2e2e2e;
   border-radius: 3px;
 }
 
 .bar__progress-bg {
-  /* можно оставить пустым: фон уже задан у родителя */
   display: block;
   width: 100%;
   height: 100%;
@@ -172,9 +164,8 @@ onMounted(async () => {
 .bar__progress-fill {
   height: 100%;
   background-color:#4E4E4E;
-; /* цвет заполнения — поменяй на свой */
   border-radius: 3px;
-  transition: width 0.1s linear; /* плавная анимация полоски */
+  transition: width 0.1s linear;
   position: absolute;
   top: 0;
   left: 0;

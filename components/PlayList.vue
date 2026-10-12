@@ -11,13 +11,12 @@
       </div>
     </div>
 
-    <!-- Добавляем компонент для отображения треков -->
     <TrackList />
   </div>
 </template>
 
 <script setup>
- import TrackList from './TrackList.vue';  // Импортируем компонент
+ import TrackList from './TrackList.vue';
 </script>
 
 <style scoped>

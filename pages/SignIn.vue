@@ -37,10 +37,8 @@
 
 <script setup>
 import { ref } from 'vue'
-// import { useRouter } from 'vue-router'
 import styles from '@/assets/signin.module.css'
 
-// const router = useRouter()
 const email = ref('')
 const password = ref('')
 const error = ref('')
@@ -54,6 +52,5 @@ function handleSubmit() {
   console.log('Вход:', email.value, password.value)
 }
 
-// Доступ к CSS-классам через $style
 const $style = styles
 </script>

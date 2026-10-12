@@ -157,7 +157,7 @@ const handlePlay = () => {
   flex: 0 0 60px;
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* прижимаем к правому краю колонки */
+  justify-content: flex-end;
   gap: 8px;
 }
 
