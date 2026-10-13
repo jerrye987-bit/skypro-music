@@ -3,6 +3,13 @@
     <div class="playlist__track">
       <div class="track__title">
         <div class="track__titleImage">
+            <div
+              class="track-indicator"
+              :class="{
+                'track-indicator--active': isCurrentTrack,
+                'track-indicator--paused': !isPlaying
+              }"
+            />
           <svg class="track__titleSvg">
             <use xlink:href="/img/icon/sprite.svg#icon-note" />
           </svg>
@@ -41,7 +48,8 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
+import { usePlayerStore } from '~/stores/player'
+import { computed } from 'vue'
 
 const props = defineProps({
   track: {
@@ -51,6 +59,21 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['play'])
+
+const playerStore = usePlayerStore()
+
+const isCurrentTrack = computed(() => {
+  if (!playerStore.currentTrack) {
+    return false
+  }
+
+  const currentFile = playerStore.currentTrack.track_file
+  const trackFile = props.track?.track_file
+
+  return currentFile === trackFile
+})
+
+const isPlaying = computed(() => playerStore.isPlaying)
 
 const handlePlay = () => {
   emit('play', props.track)
@@ -97,6 +120,8 @@ const handlePlay = () => {
   align-items: center;
   justify-content: center;
   margin-right: 17px;
+  position: relative;
+  z-index: 1;
 }
 
 .track__titleSvg {
@@ -177,4 +202,48 @@ const handlePlay = () => {
   color: #696969;
   text-align: right;
 }
+
+.track-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(182, 114, 255, 0.5);
+
+  /* По умолчанию — скрыт */
+  background-color: transparent;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Показываем, только если есть класс --active */
+.track-indicator.track-indicator--active {
+  background-color: #b672ff;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Пульсация: только если активный и НЕ на паузе */
+.track-indicator.track-indicator--active:not(.track-indicator--paused) {
+  animation: pulse-dot 1.4s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 0.6;
+  }
+}
+
 </style>

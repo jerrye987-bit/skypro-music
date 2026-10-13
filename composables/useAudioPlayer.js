@@ -58,7 +58,6 @@ export function useAudioPlayer() {
       try {
         await playerStore.audioRef.play()
         playerStore.setPlaying(true)
-        console.log('✅ Новый трек начал играть')
       } catch (e) {
         console.error('Ошибка play() для нового трека', e)
         playerStore.setPlaying(false)

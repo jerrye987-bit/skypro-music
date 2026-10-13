@@ -28,8 +28,8 @@ export const useTracks = () => {
 
       const formattedTracks = data.data.map((track) => ({
         ...track,
-        time: formatDuration(track.duration_in_seconds),
-      }))
+        time: formatDuration(track.duration_in_seconds),}
+      ))
 
       tracks.value = formattedTracks
 

@@ -1,5 +1,4 @@
 <script setup>
-
 import { onMounted } from 'vue'
 import { useTracks } from '@/composables/useTracks'
 import TrackItem from './TrackItem.vue'
@@ -15,28 +14,21 @@ onMounted(() => {
 
 <template>
   <div class="content__playlist playlist">
-    <div v-if="loading" class="loading">
-      Загрузка треков...
-    </div>
+    <div v-if="loading" class="loading">Загрузка треков...</div>
 
-    <div v-else-if="error" class="error">
-      Ошибка загрузки: {{ error }}
-    </div>
+    <div v-else-if="error" class="error">Ошибка загрузки: {{ error }}</div>
 
-    <div v-else>
-      <TrackItem
-        v-for="track in tracks"
-        :key="track.id"
-        :track="track"
-        @play="playTrack"
-      />
+    <div v-else >
+      <TrackItem v-for="track in tracks" :key="track.id" :track="track" @play="playTrack" />
     </div>
   </div>
 </template>
 
 <style scoped>
-  .loading, .error {
-    padding: 20px;
-    text-align: center;
-  }
+.loading,
+.error {
+  padding: 20px;
+  text-align: center;
+}
+
 </style>

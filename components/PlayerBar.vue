@@ -2,13 +2,10 @@
   <div class="bar">
     <div class="bar__content">
       <div class="bar__playerProgress" @click="handleProgressClick">
-  <div class="bar__progress-bg" />
+        <div class="bar__progress-bg" />
 
-  <div
-    class="bar__progress-fill"
-    :style="{ width: playerStore.progress + '%' }"
-  />
-</div>
+        <div class="bar__progress-fill" :style="{ width: playerStore.progress + '%' }" />
+      </div>
       <div class="bar__playerBlock">
         <div class="bar__player player">
           <div class="player__controls">
@@ -135,11 +132,14 @@ onMounted(async () => {
 
 <style scoped>
 .bar {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
+  right: 0;
   width: 100%;
   background: rgba(28, 28, 28, 0.5);
+  height: 73px;
+  z-index: 1000;
 }
 
 .bar__content {
@@ -163,7 +163,7 @@ onMounted(async () => {
 
 .bar__progress-fill {
   height: 100%;
-  background-color:#4E4E4E;
+  background-color: #b672ff;
   border-radius: 3px;
   transition: width 0.1s linear;
   position: absolute;
