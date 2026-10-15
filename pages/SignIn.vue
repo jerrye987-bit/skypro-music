@@ -5,23 +5,23 @@
         <form :class="$style.modal__form" @submit.prevent="handleSubmit">
           <RouterLink to="/">
             <div :class="$style.modal__logo">
-              <img src="/img/logo_modal.svg" alt="logo" />
+              <img src="/img/logo_modal.svg" alt="logo" >
             </div>
           </RouterLink>
           <input
+            v-model="email"
             :class="[$style.modal__input, $style.login]"
             type="text"
             name="login"
             placeholder="Почта"
-            v-model="email"
-          />
+          >
           <input
+            v-model="password"
             :class="$style.modal__input"
             type="password"
             name="password"
             placeholder="Пароль"
-            v-model="password"
-          />
+          >
           <div :class="$style.errorContainer">
             <span v-if="error">{{ error }}</span>
           </div>
@@ -37,10 +37,8 @@
 
 <script setup>
 import { ref } from 'vue'
-// import { useRouter } from 'vue-router'
 import styles from '@/assets/signin.module.css'
 
-// const router = useRouter()
 const email = ref('')
 const password = ref('')
 const error = ref('')
@@ -54,6 +52,5 @@ function handleSubmit() {
   console.log('Вход:', email.value, password.value)
 }
 
-// Доступ к CSS-классам через $style
 const $style = styles
 </script>
