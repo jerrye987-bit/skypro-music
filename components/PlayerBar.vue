@@ -86,7 +86,7 @@
         </div>
       </div>
     </div>
-    <audio ref="audioRef" @timeupdate="handleTimeUpdate" />
+    <audio ref="audioRef" preload="none" @timeupdate="handleTimeUpdate" />
   </div>
 </template>
 
