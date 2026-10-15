@@ -3,6 +3,12 @@ import { usePlayerStore } from '~/stores/player'
 export function useAudioPlayer() {
   const playerStore = usePlayerStore()
 
+  watchEffect(() => {
+    if (playerStore.progress >= 100 && playerStore.isPlaying) {
+      playerStore.setPlaying(false)
+    }
+  })
+
   const initPlayer = (element) => {
     if (!element) {
       console.error('Плеера нет :(')
@@ -75,10 +81,6 @@ export function useAudioPlayer() {
     if (duration) {
       const progress = (currentTime / duration) * 100
       playerStore.setProgress(progress)
-    }
-
-    if (duration - currentTime < 0.5 && playerStore.isPlaying) {
-      playerStore.setPlaying(false)
     }
   }
 
