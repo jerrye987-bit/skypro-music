@@ -17,7 +17,7 @@
       >
     </div>
   </div>
-  <h2 class="centerblock__h2">Треки</h2>
+  <h2 class="centerblock__h2">{{ props.title }}</h2>
   <div class="centerblock__filter">
     <div class="filter__title">Искать по:</div>
     <div
@@ -52,6 +52,13 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useTracks } from '@/composables/useTracks'
+
+const props = defineProps({
+  title: {
+    type: String,
+    default: 'Треки'   // если не передали — будет «Треки»
+  }
+})
 
 const { tracks, loading, error, fetchTracks } = useTracks()
 
@@ -181,9 +188,9 @@ onMounted(() => {
 
 .centerblock__h2 {
   font-weight: 400;
-  font-size: 64px;
-  line-height: 72px;
-  letter-spacing: -0.8px;
+  font-size: 60px;
+  line-height: 64px;
+  letter-spacing: -1.3%;
   margin-bottom: 45px;
   color: #ffffff;
 }
