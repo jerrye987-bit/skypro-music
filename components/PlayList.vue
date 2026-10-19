@@ -11,12 +11,27 @@
       </div>
     </div>
 
-    <TrackList />
+    <TrackList :tracks="filteredTracks" @play="handlePlayTrack" />
   </div>
 </template>
 
 <script setup>
- import TrackList from './TrackList.vue';
+import TrackList from './TrackList.vue'
+import { usePlayerStore } from '~/stores/player.js';
+
+defineProps({
+  filteredTracks: {
+    type: Array,
+    default: () => []
+  }
+})
+
+const playerStore = usePlayerStore()
+
+const handlePlayTrack = (track) => {
+  playerStore.setCurrentTrack(track)
+  playerStore.play()
+}
 </script>
 
 <style scoped>

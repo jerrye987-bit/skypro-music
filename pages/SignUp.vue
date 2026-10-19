@@ -46,14 +46,6 @@
 
           <div v-if="successMessage" class="success-block">
             <p class="success-message">{{ successMessage }}</p>
-
-            <button
-              type="button"
-              class="btn-login-now"
-              @click="forceLogin"
-            >
-              Войти сейчас
-            </button>
           </div>
 
           <NuxtLink to="/signin" class="modal__btnSignup"> Уже есть аккаунт? Войти </NuxtLink>
@@ -122,13 +114,10 @@ const handleSubmit = async () => {
       if (successMessage.value) {
         navigateTo('/signin')
       }
-    }, 3000)
+    }, 2000)
   }
 }
 
-  const forceLogin = () => {
-    navigateTo('/signin')
-  }
 </script>
 
 <style scoped>
@@ -317,5 +306,12 @@ const handleSubmit = async () => {
 
 .modal__btnEnter:hover {
   background-color: #3f007d;
+}
+
+.success-message {
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: -0.05px;
+  color: #000000;
 }
 </style>
