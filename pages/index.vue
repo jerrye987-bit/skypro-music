@@ -34,9 +34,9 @@ const handleFiltersUpdate = (values) => {
 }
 
 const filteredTracks = computed(() => {
+  // ВАЖНО: берем значение через .value
   let result = tracks.value || []
 
-  // Фильтр по исполнителю
   if (activeFilters.value['исполнителю']) {
     const term = String(activeFilters.value['исполнителю']).toLowerCase().trim()
     result = result.filter(t =>
@@ -44,31 +44,31 @@ const filteredTracks = computed(() => {
     )
   }
 
-  // Фильтр по году выпуска
   if (activeFilters.value['году выпуска']) {
-    const term = String(activeFilters.value['году выпуска']).trim() // например, "1991"
+    const term = String(activeFilters.value['году выпуска']).trim()
     result = result.filter(t => {
       const dateStr = t.release_date
       if (!dateStr) return false
-      const year = String(dateStr).split('-')[0] // "1991" из "1991-09-06"
+      const str = String(dateStr)
+      if (str.length < 4) return false
+      const year = str.split('-')[0]
       return year === term
     })
   }
 
-  // Фильтр по жанру
   if (activeFilters.value['жанру']) {
-  const term = String(activeFilters.value['жанру']).toLowerCase().trim()
-  result = result.filter(t => {
-    const genres = Array.isArray(t.genre)
-      ? t.genre
-      : (t.genre ? [String(t.genre)] : [])
-
-    return genres.some(g => {
-      const gNorm = String(g).toLowerCase().trim()
-      return gNorm.includes(term)
+    const term = String(activeFilters.value['жанру']).toLowerCase().trim()
+    result = result.filter(t => {
+      const genres = Array.isArray(t.genre)
+        ? t.genre
+        : (t.genre ? [String(t.genre)] : [])
+      return genres.some(g => {
+        const gNorm = String(g).toLowerCase().trim()
+        return gNorm.includes(term)
+      })
     })
-  })
-}
+  }
+
 
 return result
 })

@@ -1,0 +1,91 @@
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+
+export const useAuthStore = defineStore('auth', () => {
+  const user = ref<any>(null)
+  const isLoading = ref(false)
+  const error = ref<string | null>(null)
+  const isCriticalError = ref<boolean>(false)
+
+  const setTokens = (access: string, refresh: string) => {
+    localStorage.setItem('access_token', access)
+    localStorage.setItem('refresh_token', refresh)
+  }
+
+  const clearTokens = () => {
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
+  }
+
+  const logout = () => {
+    clearTokens()
+    user.value = null
+    error.value = null
+  }
+
+  const login = async (email: string, password: string) => {
+    isLoading.value = true
+    error.value = null
+    isCriticalError.value = false
+
+    try {
+      const res = await fetch(
+        'https://webdev-music-003b5b991590.herokuapp.com/user/login/',
+        {
+          method: 'POST',
+          body: JSON.stringify({ email, password }),
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        const message = data?.message || `Ошибка авторизации: ${res.status} ${res.statusText}`
+        error.value = message
+        return
+      }
+
+      const data = await res.json()
+
+      const tokenRes = await fetch(
+        'https://webdev-music-003b5b991590.herokuapp.com/user/token/',
+        {
+          method: 'POST',
+          body: JSON.stringify({ email, password }),
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+
+      if (!tokenRes.ok) {
+        const tokensData = await tokenRes.json().catch(() => ({}))
+        const tokenMessage = tokensData?.message || 'Не удалось получить токены.'
+        error.value = tokenMessage
+        return
+      }
+
+      const tokensData = await tokenRes.json()
+      if (tokensData.access && tokensData.refresh) {
+        setTokens(tokensData.access, tokensData.refresh)
+        user.value = data
+      } else {
+        error.value = 'Сервер не вернул токены.'
+      }
+    } catch (e: any) {
+      console.error('Критическая ошибка в login:', e)
+      error.value = e instanceof Error ? e.message : 'Произошла непредвиденная ошибка. Попробуйте позже.'
+      isCriticalError.value = true
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  return {
+    user,
+    isLoading,
+    error,
+    isCriticalError,
+    login,
+    clearTokens,
+    logout,
+  }
+})

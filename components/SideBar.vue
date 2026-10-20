@@ -2,9 +2,17 @@
   <div class="playlist-sidebar">
     <!-- Блок пользователя -->
     <div class="sidebar__personal">
-      <p class="sidebar__personalName">Sergey.Ivanov</p>
-      <div class="sidebar__icon">
-        <svg>
+      <p class="sidebar__personalName">
+        {{ userName || 'Гость' }}
+      </p>
+
+      <!-- Кнопка выхода: добавляем @click и делаем курсор явно -->
+      <div
+        v-if="showLogoutButton"
+        class="sidebar__icon"
+        @click="handleLogout"
+      >
+        <svg width="40" height="40">
           <use xlink:href="/img/icon/sprite.svg#logout" />
         </svg>
       </div>
@@ -50,6 +58,24 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import { computed } from 'vue'
+import { useAuthStore } from '~/stores/auth' // Проверь, что путь к стору верный!
+import { navigateTo } from '#imports'
+
+const authStore = useAuthStore()
+
+// Имя пользователя из стора (если там есть поле user или username)
+const userName = computed(() => authStore.user?.username || authStore.user?.name || null)
+
+const showLogoutButton = computed(() => !!authStore.user)
+
+const handleLogout = async () => {
+  await authStore.logout() // Вызываем метод выхода из твоего Pinia-стора
+  navigateTo('/')           // Перенаправляем на главную (или на /signin, если хочешь сразу на вход)
+}
+</script>
 
 <style scoped>
 .playlist-sidebar {

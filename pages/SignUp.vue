@@ -5,9 +5,11 @@
         <form class="modal__form" @submit.prevent="handleSubmit">
           <NuxtLink to="/">
             <div class="modal__logo">
-              <img src="/img/logo_modal.svg" alt="logo" >
+              <img src="/img/logo_modal.svg" alt="logo">
             </div>
           </NuxtLink>
+
+          <h2 class="modal__title">Регистрация</h2>
 
           <div class="field-group">
             <input
@@ -18,6 +20,17 @@
               placeholder="Почта"
               autocomplete="email"
             >
+          </div>
+
+          <div class="field-group">
+              <input
+                v-model="username"
+                class="modal__input"
+                type="text"
+                name="username"
+                placeholder="Никнейм"
+                autocomplete="off"
+              >
           </div>
 
           <div class="field-group">
@@ -44,11 +57,17 @@
 
           <button class="modal__btnEnter" type="submit">Зарегистрироваться</button>
 
+          <!-- Сообщение об ошибке (теперь оно будет красным и заметным) -->
+          <p v-if="errorMessage" class="error-message">
+            {{ errorMessage }}
+          </p>
+
+          <!-- Сообщение об успехе -->
           <div v-if="successMessage" class="success-block">
             <p class="success-message">{{ successMessage }}</p>
           </div>
 
-          <NuxtLink to="/signin" class="modal__btnSignup"> Уже есть аккаунт? Войти </NuxtLink>
+          <NuxtLink to="/signin" class="modal__btnSignup">Уже есть аккаунт? Войти</NuxtLink>
         </form>
       </div>
     </div>
@@ -57,6 +76,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { navigateTo } from '#imports'
 import { showError } from '#app'
 
 definePageMeta({
@@ -66,61 +86,99 @@ definePageMeta({
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const username = ref('')
+
+const errorMessage = ref(null)
 const successMessage = ref(null)
 const isRedirecting = ref(false)
 
 const handleSubmit = async () => {
+  errorMessage.value = null
   successMessage.value = null
   isRedirecting.value = false
 
-  // 1. Проверка почты
   if (!email.value.trim()) {
-    return showError({
-      status: 400,
-      message: 'Пожалуйста, введите почту.',
-    })
+    errorMessage.value = 'Пожалуйста, введите почту.'
+    return
   }
 
-  // 2. Проверка длины пароля
+  if (!username.value.trim()) {
+    errorMessage.value = 'Придумайте имя пользователя (username).'
+    return
+  }
+
   if (!password.value.trim() || password.value.length < 6) {
-    return showError({
-      status: 400,
-      message: 'Пароль должен быть не короче 6 символов.',
-    })
+    errorMessage.value = 'Пароль должен быть не короче 6 символов.'
+    return
   }
 
-  // 3. Проверка, что второе поле заполнено
   if (!confirmPassword.value.trim()) {
-    return showError({
-      status: 400,
-      message: 'Пожалуйста, повторите пароль в нижнем поле.',
-    })
+    errorMessage.value = 'Пожалуйста, повторите пароль в нижнем поле.'
+    return
   }
 
-  // 4. Проверка совпадения паролей
   if (password.value !== confirmPassword.value) {
-    return showError({
-      status: 400,
-      message: 'Пароли в двух полях должны быть одинаковыми.',
-    })
+    errorMessage.value = 'Пароли в двух полях должны быть одинаковыми.'
+    return
   }
 
-  successMessage.value = 'Регистрация успешна! Теперь можно войти.'
-
-
-  if (!isRedirecting.value) {
-    isRedirecting.value = true
-    setTimeout(() => {
-      if (successMessage.value) {
-        navigateTo('/signin')
+  try {
+    const res = await fetch(
+      'https://webdev-music-003b5b991590.herokuapp.com/user/signup/',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          email: email.value,
+          password: password.value,
+          username: username.value.trim()
+        }),
+        headers: { 'Content-Type': 'application/json' }
       }
-    }, 2000)
+    )
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      errorMessage.value = data?.message || `Ошибка регистрации: ${res.status} ${res.statusText}`
+      return
+    }
+
+    let data = { message: 'Не удалось прочитать ответ сервера' }
+
+    data = await res.json()
+
+    if (!res.ok) {
+      errorMessage.value = data?.message || `Ошибка регистрации: ${res.status} ${res.statusText}`
+      return
+    }
+
+    successMessage.value = 'Регистрация успешна! Теперь можно войти.'
+
+    if (!isRedirecting.value) {
+      isRedirecting.value = true
+      setTimeout(() => {
+        navigateTo('/signin')
+      }, 2000)
+    }
+  } catch (e) {
+    console.error('Критическая ошибка:', e)
+    await showError({
+      status: 503,
+      message: 'Сервер временно недоступен. Проверьте соединение и попробуйте позже.'
+    })
   }
 }
-
 </script>
 
 <style scoped>
+.error-message {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: -0.05px;
+  color: #000000;
+}
+
 .wrapper {
   width: 100%;
   min-height: 100%;

@@ -5,7 +5,7 @@
         <form class="modal__form" @submit.prevent="handleSubmit">
           <NuxtLink to="/">
             <div class="modal__logo">
-              <img src="/img/logo_modal.svg" alt="logo" >
+              <img src="/img/logo_modal.svg" alt="logo">
             </div>
           </NuxtLink>
 
@@ -13,7 +13,7 @@
             <input
               v-model="email"
               class="modal__input"
-              type="text"
+              type="email"
               name="login"
               placeholder="Почта"
               autocomplete="email"
@@ -47,9 +47,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { showError } from '#app'
+import { ref, computed } from 'vue'
 import { navigateTo } from '#imports'
+import { useAuthStore } from '~/stores/auth'
+import { showError } from '#app'
 
 definePageMeta({
   layout: false,
@@ -57,46 +58,48 @@ definePageMeta({
 
 const email = ref('')
 const password = ref('')
-const errorMessage = ref(null)
 
+const auth = useAuthStore()
+
+const errorMessage = computed(() => auth.error)
 
 const handleSubmit = async () => {
-  errorMessage.value = null
+  auth.error = null
+  auth.isCriticalError = false
 
   if (!email.value.trim()) {
-    return showError({
-      status: 400,
-      message: 'Пожалуйста, введите почту.',
-    })
+    auth.error = 'Пожалуйста, введите почту.'
+    return
   }
-
   if (!password.value.trim()) {
-    return showError({
-      status: 400,
-      message: 'Пожалуйста, введите пароль.',
-    })
+    auth.error = 'Пожалуйста, введите пароль.'
+    return
   }
 
-   await navigateTo('/')
-  // Запрос к API
-  // try {
-  //   await $fetch('/api/signin', {
-  //     method: 'POST',
-  //     body: { email: email.value, password: password.value },
-  //   })
-  //   // navigateTo('/')
-  // } catch (e) {
-  //   console.error(e)
+  await auth.login(email.value, password.value)
 
-  //   showError({
-  //     status: 500,
-  //     message: 'Не удалось выполнить вход. Попробуйте позже.',
-  //   })
-  // }
+  if (auth.isCriticalError) {
+    return showError('Сервер временно недоступен. Проверьте соединение и попробуйте позже.')
+  }
+
+  if (auth.error) {
+    return
+  }
+
+  await navigateTo('/')
 }
 </script>
 
 <style scoped>
+.error-message {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: -0.05px;
+  color: #000000;
+}
+
 .wrapper {
   width: 100%;
   min-height: 100%;

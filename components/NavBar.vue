@@ -64,7 +64,7 @@ onMounted(() => {
 
 .nav__burger {
   width: 20px;
-  height: 40px;
+  height: 13px;
   padding: 13px 0;
   display: flex;
   flex-direction: column;
@@ -77,7 +77,7 @@ onMounted(() => {
   transition: all 0.3s ease;
   opacity: 0;
   position: absolute;
-  top: 100px;
+  top: 130px;
 
   width: 100%;
   background-color: #181818;
@@ -143,5 +143,6 @@ onMounted(() => {
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
+  text-decoration: none;
 }
 </style>

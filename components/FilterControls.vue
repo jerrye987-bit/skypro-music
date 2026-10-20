@@ -95,6 +95,14 @@ const getFilterItems = (filter) => {
   }
 }
 
+const getTrackYear = (release_date) => {
+  if (typeof release_date === 'string' && release_date.includes('-')) {
+    const year = release_date.split('-')[0]
+    return /^\d{4}$/.test(year) ? year : 'Неизвестно'
+  }
+  return 'Неизвестно'
+}
+
 const authorItems = computed(() => {
   const items = new Set()
   props.tracks.forEach((track) => {
@@ -109,16 +117,20 @@ const authorItems = computed(() => {
 
 const yearItems = computed(() => {
   const items = new Set()
+
   props.tracks.forEach((track) => {
-    const year = track.release_date?.split('-')[0] || 'Неизвестно'
-    items.add(year)
+    const finalYear = getTrackYear(track.release_date)
+    items.add(finalYear)
   })
+
   return Array.from(items).sort((a, b) => {
     if (a === 'Неизвестно') return 1
     if (b === 'Неизвестно') return -1
-    const numA = Number(a)
-    const numB = Number(b)
-    if (!isNaN(numA) && !isNaN(numB)) return numB - numA
+
+    const na = Number(a)
+    const nb = Number(b)
+
+    if (!isNaN(na) && !isNaN(nb)) return nb - na
     return b.localeCompare(a)
   })
 })
