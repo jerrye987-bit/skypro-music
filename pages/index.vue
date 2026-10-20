@@ -34,7 +34,6 @@ const handleFiltersUpdate = (values) => {
 }
 
 const filteredTracks = computed(() => {
-  // ВАЖНО: берем значение через .value
   let result = tracks.value || []
 
   if (activeFilters.value['исполнителю']) {

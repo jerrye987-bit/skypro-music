@@ -22,7 +22,7 @@
           <NuxtLink to="/" class="menu__link">Главное</NuxtLink>
         </li>
         <li class="menu__item">
-          <NuxtLink to="/playlist" class="menu__link">Мой плейлист</NuxtLink>
+          <NuxtLink to="/favorite" class="menu__link">Мой плейлист</NuxtLink>
         </li>
         <li class="menu__item">
           <NuxtLink to="/signin" class="menu__link">Войти</NuxtLink>
