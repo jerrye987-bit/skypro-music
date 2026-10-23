@@ -46,7 +46,7 @@
 
           <use xlink:href="/img/icon/sprite.svg#icon-like" />
         </svg>
-        <span class="track__timeText">{{ track?.time || '00:00' }}</span>
+        <span class="track__timeText">{{ formatTime(track?.duration_in_seconds) }}</span>
       </div>
     </div>
   </div>
@@ -55,6 +55,7 @@
 <script setup>
 import { usePlayerStore } from '~/stores/player'
 import { ref, computed } from 'vue'
+import { useAuthFetch } from '~/composables/useAuthFetch'
 
 const props = defineProps({
   track: {
@@ -104,6 +105,7 @@ const toggleFavorite = async () => {
 
   const token = localStorage.getItem('access_token')
 
+  // Не залогинена — просим логин, запрос даже не отправляем
   if (!token) {
     isPending.value = false
     emit('need-login')
@@ -111,17 +113,10 @@ const toggleFavorite = async () => {
   }
 
   try {
-    const baseUrl = 'https://webdev-music-003b5b991590.herokuapp.com'
-    const url = `${baseUrl}/catalog/track/${id}/favorite/`
-    const method = isInFavorites.value ? 'DELETE' : 'POST'
-
-    const res = await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const res = await useAuthFetch(
+      `https://webdev-music-003b5b991590.herokuapp.com/catalog/track/${id}/favorite/`,
+      { method: isInFavorites.value ? 'DELETE' : 'POST' }
+    )
 
     if (!res.ok) {
       const data = await res.json().catch(() => ({}))
@@ -137,6 +132,14 @@ const toggleFavorite = async () => {
   } finally {
     isPending.value = false
   }
+}
+
+const formatTime = (seconds) => {
+  const total = Number(seconds)
+  if (!total || total <= 0) return '00:00'
+  const m = Math.floor(total / 60)
+  const s = Math.floor(total % 60)
+  return `${m}:${String(s).padStart(2, '0')}`
 }
 </script>
 

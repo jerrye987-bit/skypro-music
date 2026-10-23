@@ -31,7 +31,7 @@ import { useHead } from '@unhead/vue'
 import { navigateTo } from '#app'
 
 useHead({
-  title: 'Избранное | Skypro.Music',
+  title: 'Мои треки | Skypro.Music',
   meta: [
     { name: 'description', content: 'Ваши избранные треки на Skypro.Music' },
     { property: 'og:site_name', content: 'Skypro Music' },

@@ -7,11 +7,7 @@
       </p>
 
       <!-- Кнопка выхода: добавляем @click и делаем курсор явно -->
-      <div
-        v-if="showLogoutButton"
-        class="sidebar__icon"
-        @click="handleLogout"
-      >
+      <div v-if="showLogoutButton" class="sidebar__icon" @click="handleLogout">
         <svg width="40" height="40">
           <use xlink:href="/img/icon/sprite.svg#logout" />
         </svg>
@@ -22,36 +18,36 @@
     <div class="sidebar__block">
       <div class="sidebar__list">
         <div class="sidebar__item">
-          <NuxtLink to="/playlist/day" class="sidebar__link">
+          <NuxtLink to="/category/2" class="sidebar__link">
             <img
               class="sidebar__img"
               src="/img/playlist01.png"
-              alt="Day's playlist"
+              alt="Плейлист дня"
               width="250"
               height="170"
-            >
+            />
           </NuxtLink>
         </div>
         <div class="sidebar__item">
-          <NuxtLink to="/playlist/rock" class="sidebar__link">
+          <NuxtLink to="/category/3" class="sidebar__link">
             <img
               class="sidebar__img"
               src="/img/playlist02.png"
-              alt="Rock hits"
+              alt="100 танцевальных хитов"
               width="250"
               height="170"
-            >
+            />
           </NuxtLink>
         </div>
         <div class="sidebar__item">
-          <NuxtLink to="/playlist/jazz" class="sidebar__link">
+          <NuxtLink to="/category/4" class="sidebar__link">
             <img
               class="sidebar__img"
               src="/img/playlist03.png"
-              alt="Jazz vibes"
+              alt="Инди-заряд"
               width="250"
               height="170"
-            >
+            />
           </NuxtLink>
         </div>
       </div>
@@ -73,7 +69,7 @@ const showLogoutButton = computed(() => !!authStore.user)
 
 const handleLogout = async () => {
   await authStore.logout() // Вызываем метод выхода из твоего Pinia-стора
-  navigateTo('/')           // Перенаправляем на главную (или на /signin, если хочешь сразу на вход)
+  navigateTo('/') // Перенаправляем на главную (или на /signin, если хочешь сразу на вход)
 }
 </script>
 
