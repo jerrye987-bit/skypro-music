@@ -15,6 +15,18 @@ export const useAuthStore = defineStore('auth', () => {
   const clearTokens = () => {
     localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')
+    localStorage.removeItem('user')
+  }
+
+  const initAuth = () => {
+    const access = localStorage.getItem('access_token')
+    if (access) {
+      try {
+        user.value = JSON.parse(localStorage.getItem('user') || 'null')
+      } catch {
+        user.value = null
+      }
+    }
   }
 
   const logout = () => {
@@ -67,6 +79,7 @@ export const useAuthStore = defineStore('auth', () => {
       if (tokensData.access && tokensData.refresh) {
         setTokens(tokensData.access, tokensData.refresh)
         user.value = data
+        localStorage.setItem('user', JSON.stringify(data))
       } else {
         error.value = 'Сервер не вернул токены.'
       }
@@ -87,5 +100,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     clearTokens,
     logout,
+    initAuth,
   }
 })

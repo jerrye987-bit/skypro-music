@@ -28,6 +28,12 @@
 import NavBar from '~/components/NavBar.vue'
 import PlayerBar from '~/components/PlayerBar.vue'
 import SideBar from '~/components/SideBar.vue'
+
+const authStore = useAuthStore()
+
+onMounted(() => {
+  authStore.initAuth()
+})
 </script>
 
 <style scoped>
