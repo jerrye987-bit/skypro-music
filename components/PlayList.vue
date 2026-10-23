@@ -11,26 +11,43 @@
       </div>
     </div>
 
-    <TrackList :tracks="filteredTracks" @play="handlePlayTrack" />
+    <TrackList
+      :tracks="filteredTracks"
+      :favorite-tracks="favoriteTracks"
+      @play="handlePlayTrack"
+      @refresh-favorites="handleRefreshFavorites"
+      @need-login="emit('need-login')"
+    />
   </div>
 </template>
 
 <script setup>
 import TrackList from './TrackList.vue'
-import { usePlayerStore } from '~/stores/player.js';
+import { usePlayerStore } from '~/stores/player.js'
+import { defineProps, defineEmits } from 'vue'
 
 defineProps({
   filteredTracks: {
     type: Array,
-    default: () => []
-  }
+    default: () => [],
+  },
+  favoriteTracks: {
+    type: Array,
+    default: () => [],
+  },
 })
+
+const emit = defineEmits(['play', 'refresh-favorites', 'need-login'])
 
 const playerStore = usePlayerStore()
 
 const handlePlayTrack = (track) => {
   playerStore.setCurrentTrack(track)
   playerStore.play()
+}
+
+const handleRefreshFavorites = () => {
+  emit('refresh-favorites')
 }
 </script>
 

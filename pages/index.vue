@@ -1,8 +1,15 @@
 <template>
   <div>
-    <FilterControls :tracks="tracks" title="Треки" @filters-update="handleFiltersUpdate" />
+    <FilterControls
+      :tracks="tracks"
+      title="Треки"
+      @filters-update="handleFiltersUpdate" />
 
-    <PlayList :filtered-tracks="filteredTracks" />
+    <PlayList
+      :filtered-tracks="filteredTracks"
+      :favorite-tracks="favoriteTracks"
+      @refresh-favorites="refreshFavorites"
+    />
   </div>
 </template>
 
@@ -10,7 +17,8 @@
 import FilterControls from '~/components/FilterControls.vue'
 import PlayList from '~/components/PlayList.vue'
 import { useTracks } from '~/composables/useTracks'
-import { ref, computed } from 'vue'
+import { useFavoriteTracks } from '~/composables/useFavoriteTracks'
+import { ref, computed, onMounted } from 'vue'
 import { useHead } from '@unhead/vue'
 
 useHead({
@@ -22,6 +30,11 @@ useHead({
 })
 
 const { tracks, fetchTracks } = useTracks()
+const { favoriteTracks, fetchFavoriteTracks } = useFavoriteTracks()
+
+const refreshFavorites = () => {
+  fetchFavoriteTracks()
+}
 
 const activeFilters = ref({
   исполнителю: null,
@@ -72,5 +85,7 @@ const filteredTracks = computed(() => {
 return result
 })
 
-fetchTracks()
+onMounted(async () => {
+  await Promise.all([fetchTracks(), fetchFavoriteTracks()])
+})
 </script>

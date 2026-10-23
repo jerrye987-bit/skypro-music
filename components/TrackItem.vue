@@ -9,7 +9,7 @@
                 'track-indicator--active': isCurrentTrack,
                 'track-indicator--paused': !isPlaying
               }"
-            />
+            ></div>
           <svg class="track__titleSvg">
             <use xlink:href="/img/icon/sprite.svg#icon-note" />
           </svg>
@@ -38,7 +38,12 @@
 
       <!-- Лайк и время -->
       <div class="track__time">
-        <svg class="track__timeSvg">
+        <svg
+          class="track__timeSvg"
+          :class="{ 'track__timeSvg--liked': isInFavorites }"
+          @click.stop="toggleFavorite"
+        >
+
           <use xlink:href="/img/icon/sprite.svg#icon-like" />
         </svg>
         <span class="track__timeText">{{ track?.time || '00:00' }}</span>
@@ -49,16 +54,20 @@
 
 <script setup>
 import { usePlayerStore } from '~/stores/player'
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   track: {
     type: Object,
     required: true,
   },
+  favoriteTracks: {
+    type: Array,
+    default: () => [],
+  }
 })
 
-const emit = defineEmits(['play'])
+const emit = defineEmits(['play', 'refresh-favorites', 'need-login'])
 
 const playerStore = usePlayerStore()
 
@@ -77,6 +86,57 @@ const isPlaying = computed(() => playerStore.isPlaying)
 
 const handlePlay = () => {
   emit('play', props.track)
+}
+const isPending = ref(false)
+
+const isInFavorites = computed(() => {
+  const trackId = String(props.track?._id ?? '')
+  return props.favoriteTracks.some(
+    (fav) => String(fav?._id ?? '') === trackId
+  )
+})
+
+const toggleFavorite = async () => {
+  const id = props.track?._id
+
+  if (isPending.value || !id) return
+  isPending.value = true
+
+  const token = localStorage.getItem('access_token')
+
+  if (!token) {
+    isPending.value = false
+    emit('need-login')
+    return
+  }
+
+  try {
+    const baseUrl = 'https://webdev-music-003b5b991590.herokuapp.com'
+    const url = `${baseUrl}/catalog/track/${id}/favorite/`
+    const method = isInFavorites.value ? 'DELETE' : 'POST'
+
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      const msg = data?.message || `Ошибка: ${res.status} ${res.statusText}`
+      alert(msg)
+      return
+    }
+
+    emit('refresh-favorites')
+  } catch (e) {
+    console.error('toggleFavorite error:', e)
+    alert('Не удалось изменить избранное. Проверьте соединение.')
+  } finally {
+    isPending.value = false
+  }
 }
 </script>
 
@@ -195,6 +255,11 @@ const handlePlay = () => {
   cursor: pointer;
 }
 
+.track__timeSvg--liked {
+  fill: #b672ff;
+  stroke: transparent;
+}
+
 .track__timeText {
   font-weight: 400;
   font-size: 16px;
@@ -209,20 +274,16 @@ const handlePlay = () => {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
-
   width: 10px;
   height: 10px;
   border-radius: 50%;
   box-shadow: 0 0 6px rgba(182, 114, 255, 0.5);
-
-  /* По умолчанию — скрыт */
   background-color: transparent;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 }
 
-/* Показываем, только если есть класс --active */
 .track-indicator.track-indicator--active {
   background-color: #b672ff;
   opacity: 1;
@@ -230,7 +291,6 @@ const handlePlay = () => {
   pointer-events: auto;
 }
 
-/* Пульсация: только если активный и НЕ на паузе */
 .track-indicator.track-indicator--active:not(.track-indicator--paused) {
   animation: pulse-dot 1.4s infinite ease-in-out;
 }

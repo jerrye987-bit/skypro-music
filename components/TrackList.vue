@@ -4,7 +4,10 @@
       v-for="track in tracks"
       :key="String(track._id)"
       :track="track"
+      :favorite-tracks="favoriteTracks"
       @play="(t) => emit('play', t)"
+      @refresh-favorites="emit('refresh-favorites')"
+      @need-login="(e) => emit('need-login', e)"
     />
   </div>
 </template>
@@ -13,13 +16,17 @@
 import { defineProps, defineEmits } from 'vue'
 import TrackItem from './TrackItem.vue'
 
-const emit = defineEmits(['play'])
+const emit = defineEmits(['play', 'refresh-favorites', 'need-login'])
 
 defineProps({
   tracks: {
     type: Array,
     default: () => []
-  }
+  },
+  favoriteTracks: {
+    type: Array,
+    default: () => []
+  },
 })
 </script>
 
