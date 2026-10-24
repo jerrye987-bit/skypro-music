@@ -57,19 +57,22 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useAuthStore } from '~/stores/auth' // Проверь, что путь к стору верный!
+import { useAuthStore } from '~/stores/auth'
+import { useFavoriteTracks } from '~/composables/useFavoriteTracks'
 import { navigateTo } from '#imports'
 
 const authStore = useAuthStore()
 
-// Имя пользователя из стора (если там есть поле user или username)
+const { clearFavoriteTracks } = useFavoriteTracks()
+
 const userName = computed(() => authStore.user?.username || authStore.user?.name || null)
 
 const showLogoutButton = computed(() => !!authStore.user)
 
 const handleLogout = async () => {
-  await authStore.logout() // Вызываем метод выхода из твоего Pinia-стора
-  navigateTo('/') // Перенаправляем на главную (или на /signin, если хочешь сразу на вход)
+  clearFavoriteTracks()
+  await authStore.logout()
+  navigateTo('/')
 }
 </script>
 

@@ -3,13 +3,13 @@
     <div class="playlist__track">
       <div class="track__title">
         <div class="track__titleImage">
-            <div
-              class="track-indicator"
-              :class="{
-                'track-indicator--active': isCurrentTrack,
-                'track-indicator--paused': !isPlaying
-              }"
-            ></div>
+          <div
+            class="track-indicator"
+            :class="{
+              'track-indicator--active': isCurrentTrack,
+              'track-indicator--paused': !isPlaying,
+            }"
+          ></div>
           <svg class="track__titleSvg">
             <use xlink:href="/img/icon/sprite.svg#icon-note" />
           </svg>
@@ -43,7 +43,6 @@
           :class="{ 'track__timeSvg--liked': isInFavorites }"
           @click.stop="toggleFavorite"
         >
-
           <use xlink:href="/img/icon/sprite.svg#icon-like" />
         </svg>
         <span class="track__timeText">{{ formatTime(track?.duration_in_seconds) }}</span>
@@ -65,7 +64,7 @@ const props = defineProps({
   favoriteTracks: {
     type: Array,
     default: () => [],
-  }
+  },
 })
 
 const emit = defineEmits(['play', 'refresh-favorites', 'need-login'])
@@ -92,9 +91,7 @@ const isPending = ref(false)
 
 const isInFavorites = computed(() => {
   const trackId = String(props.track?._id ?? '')
-  return props.favoriteTracks.some(
-    (fav) => String(fav?._id ?? '') === trackId
-  )
+  return props.favoriteTracks.some((fav) => String(fav?._id ?? '') === trackId)
 })
 
 const toggleFavorite = async () => {
@@ -103,20 +100,15 @@ const toggleFavorite = async () => {
   if (isPending.value || !id) return
   isPending.value = true
 
-  const token = localStorage.getItem('access_token')
-
-  // Не залогинена — просим логин, запрос даже не отправляем
-  if (!token) {
-    isPending.value = false
-    emit('need-login')
-    return
-  }
-
   try {
-    const res = await useAuthFetch(
-      `https://webdev-music-003b5b991590.herokuapp.com/catalog/track/${id}/favorite/`,
-      { method: isInFavorites.value ? 'DELETE' : 'POST' }
-    )
+    const res = await useAuthFetch(`/api/catalog/track/${id}/favorite/`, {
+      method: isInFavorites.value ? 'DELETE' : 'POST',
+    })
+
+    if (res.status === 401) {
+      emit('need-login')
+      return
+    }
 
     if (!res.ok) {
       const data = await res.json().catch(() => ({}))
@@ -299,7 +291,8 @@ const formatTime = (seconds) => {
 }
 
 @keyframes pulse-dot {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
@@ -308,5 +301,4 @@ const formatTime = (seconds) => {
     opacity: 0.6;
   }
 }
-
 </style>

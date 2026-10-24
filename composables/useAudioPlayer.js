@@ -17,7 +17,35 @@ export function useAudioPlayer() {
     playerStore.setAudioRef(element)
   }
 
-  // Плей\Пауза
+  // Кнопка Play в нижней панели
+  const togglePlay = async () => {
+    if (!playerStore.audioRef) return
+
+    // Трек не выбран — запускаем первый из плейлиста
+    if (!playerStore.currentTrack) {
+      const first = playerStore.playlist[0]
+      if (first) {
+        await playTrack(first)
+      }
+      return
+    }
+
+    // Трек выбран — переключаем пауза/плей
+    if (playerStore.isPlaying) {
+      playerStore.audioRef.pause()
+      playerStore.setPlaying(false)
+    } else {
+      try {
+        await playerStore.audioRef.play()
+        playerStore.setPlaying(true)
+      } catch (e) {
+        console.error('Ошибка продолжения воспроизведения', e)
+        playerStore.setPlaying(false)
+      }
+    }
+  }
+
+  // Плей\Пауза по клику на трек
   const playTrack = async (track) => {
     if (!playerStore.audioRef) {
       console.error('Плеер не инициализирован: audioRef отсутствует')
@@ -101,6 +129,7 @@ export function useAudioPlayer() {
   return {
     initPlayer,
     playTrack,
+    togglePlay,
     handleTimeUpdate,
     seekTo,
     updateVolume,

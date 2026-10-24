@@ -1,7 +1,5 @@
 import { ref } from 'vue'
 
-const BASE_URL = 'https://webdev-music-003b5b991590.herokuapp.com'
-
 interface Track {
   _id: string
   name: string
@@ -11,34 +9,31 @@ interface Track {
   track_file?: string
 }
 
+// Единое состояние на весь проект: где бы ни вызвали композабл — список один
+const favoriteTracks = ref<Track[]>([])
+const loading = ref(false)
+const error = ref<string | null>(null)
+
 export const useFavoriteTracks = () => {
-  const favoriteTracks = ref<Track[]>([])
-  const loading = ref(false)
-  const error = ref<string | null>(null)
-
   const fetchFavoriteTracks = async () => {
-    loading.value = true
-    error.value = null
-
-    const token = localStorage.getItem('access_token')
-
-    if (!token) {
-      loading.value = false
-      error.value = 'Требуется авторизация'
+    if (!localStorage.getItem('access_token')) {
+      favoriteTracks.value = []
       return
     }
 
+    loading.value = true
+    error.value = null
+
     try {
-      const response = await fetch(
-        `${BASE_URL}/catalog/track/favorite/all/`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
+      const response = await useAuthFetch('/api/catalog/track/favorite/all/', {
+        method: 'GET',
+      })
+
+      if (response.status === 401) {
+        error.value = 'Сессия истекла. Войдите заново.'
+        await navigateTo('/signin')
+        return
+      }
 
       if (!response.ok) {
         throw new Error(`Ошибка API: ${response.status}`)
@@ -46,10 +41,9 @@ export const useFavoriteTracks = () => {
 
       const json = await response.json()
 
-      const rawData = json?.data || []
+      const rawData = Array.isArray(json) ? json : (json?.data ?? [])
 
       favoriteTracks.value = Array.isArray(rawData) ? rawData : []
-
     } catch (e: unknown) {
       console.error('Ошибка при запросе избранного:', e)
       error.value = 'Не удалось загрузить избранное. Проверьте соединение или авторизацию.'
@@ -58,10 +52,15 @@ export const useFavoriteTracks = () => {
     }
   }
 
+  const clearFavoriteTracks = () => {
+    favoriteTracks.value = []
+  }
+
   return {
     favoriteTracks,
     loading,
     error,
     fetchFavoriteTracks,
+    clearFavoriteTracks,
   }
 }
