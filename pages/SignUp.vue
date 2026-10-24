@@ -79,6 +79,10 @@ import { ref } from 'vue'
 import { navigateTo } from '#imports'
 import { showError } from '#app'
 
+useHead({
+  title: 'Регистрация | Skypro.Music',
+})
+
 definePageMeta({
   layout: false,
 })

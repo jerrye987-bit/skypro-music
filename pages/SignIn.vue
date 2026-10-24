@@ -52,6 +52,10 @@ import { navigateTo } from '#imports'
 import { useAuthStore } from '~/stores/auth'
 import { showError } from '#app'
 
+useHead({
+  title: 'Вход | Skypro.Music',
+})
+
 definePageMeta({
   layout: false,
 })

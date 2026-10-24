@@ -38,13 +38,25 @@
       </div>
       <div v-if="activeFilter === filter" class="filter-dropdown">
         <ul class="filter-list">
-          <li
-            v-for="item in getFilterItems(filter)"
-            :key="item"
-            @click="selectFilterValue(filter, item)"
-          >
-            {{ item }}
-          </li>
+          <template v-if="filter === 'году выпуска'">
+            <li
+              v-for="option in sortOptions"
+              :key="'sort-' + option.value"
+              :class="{ 'sort-option--active': sortOrder === option.value }"
+              @click="selectSort(option.value)"
+            >
+              {{ option.label }}
+            </li>
+          </template>
+          <template v-else>
+            <li
+              v-for="item in getFilterItems(filter)"
+              :key="item"
+              @click="selectFilterValue(filter, item)"
+            >
+              {{ item }}
+            </li>
+          </template>
         </ul>
       </div>
     </div>
@@ -52,7 +64,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useFiltersStore } from '~/stores/filters'
 
 const props = defineProps({
   title: { type: String, default: 'Треки' },
@@ -61,7 +74,10 @@ const props = defineProps({
 
 const emit = defineEmits(['filters-update'])
 
+const filtersStore = useFiltersStore()
+
 const searchQuery = ref('')
+const sortOrder = ref('')
 const filters = ['исполнителю', 'году выпуска', 'жанру']
 const activeFilter = ref(null)
 
@@ -71,6 +87,25 @@ const selectedValues = ref({
   жанру: null,
 })
 
+const sortOptions = [
+  { label: 'По умолчанию', value: '' },
+  { label: 'Сначала новые', value: 'desc' },
+  { label: 'Сначала старые', value: 'asc' },
+]
+
+const selectSort = (value) => {
+  sortOrder.value = value
+  activeFilter.value = null
+}
+
+
+watch(searchQuery, (v) => filtersStore.setSearchQuery(v))
+watch(sortOrder, (v) => filtersStore.setSortOrder(v === '' ? null : v))
+
+const emitFilters = () => {
+  emit('filters-update', JSON.parse(JSON.stringify(selectedValues.value)))
+}
+
 const toggleFilter = (filter) => {
   activeFilter.value = activeFilter.value === filter ? null : filter
 }
@@ -78,7 +113,7 @@ const toggleFilter = (filter) => {
 const selectFilterValue = (filter, value) => {
   selectedValues.value[filter] = value
   activeFilter.value = null
-  emit('filters-update', selectedValues.value)
+  emitFilters()
 }
 
 const getFilterItems = (filter) => {
@@ -117,19 +152,14 @@ const authorItems = computed(() => {
 
 const yearItems = computed(() => {
   const items = new Set()
-
   props.tracks.forEach((track) => {
-    const finalYear = getTrackYear(track.release_date)
-    items.add(finalYear)
+    items.add(getTrackYear(track.release_date))
   })
-
   return Array.from(items).sort((a, b) => {
     if (a === 'Неизвестно') return 1
     if (b === 'Неизвестно') return -1
-
     const na = Number(a)
     const nb = Number(b)
-
     if (!isNaN(na) && !isNaN(nb)) return nb - na
     return b.localeCompare(a)
   })
@@ -153,18 +183,15 @@ const resetFilters = () => {
   selectedValues.value = {
     'исполнителю': null,
     'году выпуска': null,
-    'жанру': null
+    'жанру': null,
   }
-  emit('filters-update', selectedValues.value)
+  searchQuery.value = ''
+  sortOrder.value = ''
+  filtersStore.resetFilters()
 }
 </script>
+
 <style scoped>
-.error-message {
-  color: red;
-  margin: 20px 0;
-  padding: 10px;
-  background: rgba(255, 0, 0, 0.1);
-}
 .centerblock__header {
   display: flex;
   align-items: center;
@@ -278,5 +305,15 @@ const resetFilters = () => {
 }
 .filter-list li:hover {
   color: #b672ff;
+}
+
+.filter-divider {
+  border-top: 1px solid #4e4e4e;
+  margin: 6px 0;
+}
+
+.filter-list li.sort-option--active {
+  color: #b672ff;
+  text-decoration: underline;
 }
 </style>

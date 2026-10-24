@@ -29,6 +29,20 @@ import NavBar from '~/components/NavBar.vue'
 import PlayerBar from '~/components/PlayerBar.vue'
 import SideBar from '~/components/SideBar.vue'
 
+useHead({
+  title: 'Skypro.Music',
+  meta: [
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    { charset: 'utf-8' },
+    { name: 'description', content: 'Онлайн-музыкальный сервис Skypro.Music: слушай подборки и добавляй треки в избранное' },
+    { property: 'og:site_name', content: 'Skypro Music' },
+    { property: 'og:title', content: 'Skypro.Music' },
+    { property: 'og:description', content: 'Онлайн-музыкальный сервис: подборки треков и личный плейлист' },
+    { property: 'og:type', content: 'website' },
+  ],
+  htmlAttrs: { lang: 'ru' },
+})
+
 const authStore = useAuthStore()
 
 onMounted(() => {

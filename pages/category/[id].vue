@@ -3,7 +3,7 @@
     <FilterControls
       :tracks="tracks"
       :title="categoryTitle"
-      @filters-update="handleFiltersUpdate"
+      @filters-update="filtersStore.setFilters"
     />
 
     <div v-if="isLoading" class="loading-state">
@@ -29,7 +29,8 @@ import FilterControls from '~/components/FilterControls.vue'
 import PlayList from '~/components/PlayList.vue'
 import { useCatalogTracks } from '~/composables/useCatalogTracks'
 import { useFavoriteTracks } from '~/composables/useFavoriteTracks'
-import { computed, ref, watch } from 'vue'
+import { useFiltersStore } from '~/stores/filters'
+import { computed, watch } from 'vue'
 import { navigateTo } from '#app'
 
 const route = useRoute()
@@ -81,48 +82,7 @@ onMounted(async () => {
   await fetchFavoriteTracks()
 })
 
-const activeFilters = ref({
-  исполнителю: null,
-  'году выпуска': null,
-  жанру: null,
-})
+const filtersStore = useFiltersStore()
+const filteredTracks = computed(() => filtersStore.filteredTracks(tracks.value))
 
-const handleFiltersUpdate = (values) => {
-  activeFilters.value = values
-}
-
-const filteredTracks = computed(() => {
-  let result = tracks.value || []
-
-  if (activeFilters.value['исполнителю']) {
-    const term = String(activeFilters.value['исполнителю']).toLowerCase().trim()
-    result = result.filter((t) => t.author && String(t.author).toLowerCase().includes(term))
-  }
-
-  if (activeFilters.value['году выпуска']) {
-    const term = String(activeFilters.value['году выпуска']).trim()
-    result = result.filter((t) => {
-      const dateStr = t.release_date
-      if (!dateStr) return false
-      const str = String(dateStr)
-      if (str.length < 4) return false
-      const year = str.split('-')[0]
-      return year === term
-    })
-  }
-
-  if (activeFilters.value['жанру']) {
-    const term = String(activeFilters.value['жанру']).toLowerCase().trim()
-    result = result.filter((t) => {
-      const genres = Array.isArray(t.genre) ? t.genre : t.genre ? [String(t.genre)] : []
-
-      return genres.some((g) => {
-        const gNorm = String(g).toLowerCase().trim()
-        return gNorm.includes(term)
-      })
-    })
-  }
-
-  return result
-})
 </script>
