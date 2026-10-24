@@ -5,7 +5,7 @@
         <form class="modal__form" @submit.prevent="handleSubmit">
           <NuxtLink to="/">
             <div class="modal__logo">
-              <img src="/img/logo_modal.svg" alt="logo">
+              <img src="/img/logo_modal.svg" alt="logo" />
             </div>
           </NuxtLink>
 
@@ -19,18 +19,18 @@
               name="email"
               placeholder="Почта"
               autocomplete="email"
-            >
+            />
           </div>
 
           <div class="field-group">
-              <input
-                v-model="username"
-                class="modal__input"
-                type="text"
-                name="username"
-                placeholder="Никнейм"
-                autocomplete="off"
-              >
+            <input
+              v-model="username"
+              class="modal__input"
+              type="text"
+              name="username"
+              placeholder="Никнейм"
+              autocomplete="off"
+            />
           </div>
 
           <div class="field-group">
@@ -40,8 +40,8 @@
               type="password"
               name="password"
               placeholder="Пароль"
-              autocomplete="current-password"
-            >
+              autocomplete="new-password"
+            />
           </div>
 
           <div class="field-group">
@@ -52,7 +52,7 @@
               name="confirm_password"
               placeholder="Повторите пароль"
               autocomplete="new-password"
-            >
+            />
           </div>
 
           <button class="modal__btnEnter" type="submit">Зарегистрироваться</button>
@@ -127,28 +127,17 @@ const handleSubmit = async () => {
   }
 
   try {
-    const res = await fetch(
-      'https://webdev-music-003b5b991590.herokuapp.com/user/signup/',
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          email: email.value,
-          password: password.value,
-          username: username.value.trim()
-        }),
-        headers: { 'Content-Type': 'application/json' }
-      }
-    )
+    const res = await fetch('/api/user/signup/', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value,
+        username: username.value.trim(),
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    })
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
-      errorMessage.value = data?.message || `Ошибка регистрации: ${res.status} ${res.statusText}`
-      return
-    }
-
-    let data = { message: 'Не удалось прочитать ответ сервера' }
-
-    data = await res.json()
+    const data = await res.json().catch(() => ({}))
 
     if (!res.ok) {
       errorMessage.value = data?.message || `Ошибка регистрации: ${res.status} ${res.statusText}`
@@ -167,7 +156,7 @@ const handleSubmit = async () => {
     console.error('Критическая ошибка:', e)
     await showError({
       status: 503,
-      message: 'Сервер временно недоступен. Проверьте соединение и попробуйте позже.'
+      message: 'Сервер временно недоступен. Проверьте соединение и попробуйте позже.',
     })
   }
 }
@@ -237,12 +226,6 @@ const handleSubmit = async () => {
 
 .modal__btnSignup:active {
   background-color: #d9d9d9;
-}
-
-.modal__logo {
-  width: 140px;
-  height: 21px;
-  margin-bottom: 24px;
 }
 
 .modal__logo {

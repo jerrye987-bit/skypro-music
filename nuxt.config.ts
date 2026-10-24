@@ -14,13 +14,4 @@ export default defineNuxtConfig({
       ],
     },
   },
-  nitro: {
-    routeRules: {
-      '/api/**': {
-        proxy: {
-          to: 'https://webdev-music-003b5b991590.herokuapp.com',
-        },
-      },
-    },
-  },
 })

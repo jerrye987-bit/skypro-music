@@ -42,7 +42,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       const res = await fetch(
-        'https://webdev-music-003b5b991590.herokuapp.com/user/login/',
+        '/api/user/login/',
         {
           method: 'POST',
           body: JSON.stringify({ email, password }),
@@ -60,7 +60,7 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await res.json()
 
       const tokenRes = await fetch(
-        'https://webdev-music-003b5b991590.herokuapp.com/user/token/',
+        '/api/user/token/', 
         {
           method: 'POST',
           body: JSON.stringify({ email, password }),
