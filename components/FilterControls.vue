@@ -1,8 +1,4 @@
 <template>
-  <div v-if="error" class="error-message">
-    Произошла ошибка: {{ error }}
-  </div>
-  <div v-if="loading">Загружаем...</div>
   <div class="centerblock__header">
     <div class="centerblock__search">
       <svg class="search__svg">
@@ -12,19 +8,27 @@
         v-model="searchQuery"
         class="search__text"
         type="search"
-        placeholder="Поиск"
+        placeholder="Поиск по названию"
         name="search"
       >
     </div>
   </div>
-  <h2 class="centerblock__h2">Треки</h2>
+
+  <h2 class="centerblock__h2">
+    {{ title }}
+    <button
+      v-if="activeFilter || Object.values(selectedValues).some(v => v !== null)"
+      class="reset-btn"
+      style="margin-left: 15px; font-size: 14px; color: #aaa; background: none; border: none; cursor: pointer;"
+      @click="resetFilters"
+    >
+      Сбросить фильтр
+    </button>
+  </h2>
+
   <div class="centerblock__filter">
     <div class="filter__title">Искать по:</div>
-    <div
-      v-for="filter in filters"
-      :key="filter"
-      class="filter-group"
-    >
+    <div v-for="filter in filters" :key="filter" class="filter-group">
       <div
         class="filter__button"
         :class="{ active: activeFilter === filter }"
@@ -32,17 +36,27 @@
       >
         {{ filter }}
       </div>
-      <div
-        v-if="activeFilter === filter"
-        class="filter-dropdown"
-      >
+      <div v-if="activeFilter === filter" class="filter-dropdown">
         <ul class="filter-list">
-          <li
-            v-for="item in getFilterItems(filter)"
-            :key="item"
-          >
-            {{ item }}
-          </li>
+          <template v-if="filter === 'году выпуска'">
+            <li
+              v-for="option in sortOptions"
+              :key="'sort-' + option.value"
+              :class="{ 'sort-option--active': sortOrder === option.value }"
+              @click="selectSort(option.value)"
+            >
+              {{ option.label }}
+            </li>
+          </template>
+          <template v-else>
+            <li
+              v-for="item in getFilterItems(filter)"
+              :key="item"
+              @click="selectFilterValue(filter, item)"
+            >
+              {{ item }}
+            </li>
+          </template>
         </ul>
       </div>
     </div>
@@ -50,21 +64,60 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useTracks } from '@/composables/useTracks'
+import { ref, computed, watch } from 'vue'
+import { useFiltersStore } from '~/stores/filters'
 
-const { tracks, loading, error, fetchTracks } = useTracks()
+const props = defineProps({
+  title: { type: String, default: 'Треки' },
+  tracks: { type: Array, default: () => [] },
+})
+
+const emit = defineEmits(['filters-update'])
+
+const filtersStore = useFiltersStore()
 
 const searchQuery = ref('')
+const sortOrder = ref('')
 const filters = ['исполнителю', 'году выпуска', 'жанру']
-const activeFilter = ref('null')
+const activeFilter = ref(null)
 
-// Функция переключения фильтра
+const selectedValues = ref({
+  исполнителю: null,
+  'году выпуска': null,
+  жанру: null,
+})
+
+const sortOptions = [
+  { label: 'По умолчанию', value: '' },
+  { label: 'Сначала новые', value: 'desc' },
+  { label: 'Сначала старые', value: 'asc' },
+]
+
+const selectSort = (value) => {
+  sortOrder.value = value
+  activeFilter.value = null
+}
+
+
+watch(searchQuery, (v) => filtersStore.setSearchQuery(v))
+watch(sortOrder, (v) => filtersStore.setSortOrder(v === '' ? null : v))
+
+const emitFilters = () => {
+  emit('filters-update', JSON.parse(JSON.stringify(selectedValues.value)))
+}
+
 const toggleFilter = (filter) => {
   activeFilter.value = activeFilter.value === filter ? null : filter
 }
 
+const selectFilterValue = (filter, value) => {
+  selectedValues.value[filter] = value
+  activeFilter.value = null
+  emitFilters()
+}
+
 const getFilterItems = (filter) => {
+  if (!props.tracks || props.tracks.length === 0) return []
   switch (filter) {
     case 'исполнителю':
       return authorItems.value
@@ -77,14 +130,18 @@ const getFilterItems = (filter) => {
   }
 }
 
-// Вычисляемые свойства для списков
+const getTrackYear = (release_date) => {
+  if (typeof release_date === 'string' && release_date.includes('-')) {
+    const year = release_date.split('-')[0]
+    return /^\d{4}$/.test(year) ? year : 'Неизвестно'
+  }
+  return 'Неизвестно'
+}
+
 const authorItems = computed(() => {
-  if (!tracks.value) return []
   const items = new Set()
-  tracks.value.forEach(track => {
-    if (track.author) {
-      items.add(track.author)
-    }
+  props.tracks.forEach((track) => {
+    if (track.author) items.add(track.author)
   })
   return Array.from(items).sort((a, b) => {
     if (a === 'Неизвестно') return 1
@@ -94,28 +151,25 @@ const authorItems = computed(() => {
 })
 
 const yearItems = computed(() => {
-  if (!tracks.value) return []
   const items = new Set()
-  tracks.value.forEach(track => {
-    const year = track.release_date?.split('-')[0] || 'Неизвестно'
-    items.add(year)
+  props.tracks.forEach((track) => {
+    items.add(getTrackYear(track.release_date))
   })
   return Array.from(items).sort((a, b) => {
     if (a === 'Неизвестно') return 1
     if (b === 'Неизвестно') return -1
+    const na = Number(a)
+    const nb = Number(b)
+    if (!isNaN(na) && !isNaN(nb)) return nb - na
     return b.localeCompare(a)
   })
 })
 
 const genreItems = computed(() => {
-  if (!tracks.value) return []
   const items = new Set()
-  tracks.value.forEach(track => {
-    if (Array.isArray(track.genre)) {
-      track.genre.forEach(g => g && items.add(g.toLowerCase().trim()))
-    } else if (track.genre) {
-      items.add(track.genre.toLowerCase().trim())
-    }
+  props.tracks.forEach((track) => {
+    const genres = Array.isArray(track.genre) ? track.genre : [track.genre].filter(Boolean)
+    genres.forEach((g) => items.add(String(g).toLowerCase().trim()))
   })
   return Array.from(items).sort((a, b) => {
     if (a === 'неизвестно') return 1
@@ -124,25 +178,25 @@ const genreItems = computed(() => {
   })
 })
 
-onMounted(() => {
-  fetchTracks()
-})
+const resetFilters = () => {
+  activeFilter.value = null
+  selectedValues.value = {
+    'исполнителю': null,
+    'году выпуска': null,
+    'жанру': null,
+  }
+  searchQuery.value = ''
+  sortOrder.value = ''
+  filtersStore.resetFilters()
+}
 </script>
 
 <style scoped>
-.error-message {
-  color: red;
-  margin: 20px 0;
-  padding: 10px;
-  background: rgba(255, 0, 0, 0.1);
-}
-
 .centerblock__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-
 .centerblock__search {
   width: 100%;
   border-bottom: 1px solid #4e4e4e;
@@ -151,7 +205,6 @@ onMounted(() => {
   flex-direction: row;
   align-items: center;
 }
-
 .search__svg {
   width: 17px;
   height: 17px;
@@ -159,7 +212,6 @@ onMounted(() => {
   stroke: #ffffff;
   fill: transparent;
 }
-
 .search__text {
   flex-grow: 100;
   background-color: transparent;
@@ -170,7 +222,6 @@ onMounted(() => {
   line-height: 24px;
   color: #ffffff;
 }
-
 .search__text::placeholder {
   background-color: transparent;
   color: #ffffff;
@@ -178,23 +229,20 @@ onMounted(() => {
   font-size: 16px;
   line-height: 24px;
 }
-
 .centerblock__h2 {
   font-weight: 400;
-  font-size: 64px;
-  line-height: 72px;
-  letter-spacing: -0.8px;
+  font-size: 60px;
+  line-height: 64px;
+  letter-spacing: -1.3%;
   margin-bottom: 45px;
   color: #ffffff;
 }
-
 .centerblock__filter {
   display: flex;
   flex-direction: row;
   align-items: center;
   margin-bottom: 51px;
 }
-
 .filter__title {
   font-weight: 400;
   font-size: 16px;
@@ -202,7 +250,6 @@ onMounted(() => {
   color: #ffffff;
   margin-right: 15px;
 }
-
 .filter__button {
   font-weight: 400;
   font-size: 16px;
@@ -213,45 +260,28 @@ onMounted(() => {
   padding: 6px 20px;
   cursor: pointer;
 }
-
 .filter__button:not(:last-child) {
   margin-right: 10px;
 }
-
 .filter__button:hover {
   border-color: #d9b6ff;
   color: #d9b6ff;
 }
-
 .filter__button:active {
   border-color: #ad61ff;
   color: #ad61ff;
 }
-
 .filter-group {
   position: relative;
   display: inline-flex;
   flex-direction: column;
   margin-right: 15px;
 }
-
-.filter__button {
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  color: #ffffff;
-  border: 1px solid #ffffff;
-  border-radius: 60px;
-  padding: 6px 20px;
-  cursor: pointer;
-  margin-bottom: 5px;
-}
-
 .filter-dropdown {
   position: absolute;
   top: calc(100% + 10px);
   left: 0;
-  background: #2E2E2E;
+  background: #2e2e2e;
   padding: 12px;
   border-radius: 8px;
   z-index: 10;
@@ -260,36 +290,30 @@ onMounted(() => {
   max-width: 300px;
   word-break: break-word;
 }
-
 .filter-list {
   list-style: none;
   padding: 0;
   margin: 0;
   max-height: 200px;
   overflow-y: auto;
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-  &::-webkit-scrollbar-track {
-    background: #4B4949;
-    border-radius: 10px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: #ffffff;
-    border: 2px solid #2b2b2b;
-    border-radius: 10px;
-  }
 }
-
 .filter-list li {
   padding: 8px;
   cursor: pointer;
   font-size: 14px;
   color: #ffffff;
 }
-
 .filter-list li:hover {
-  color: #B672FF;
+  color: #b672ff;
+}
 
+.filter-divider {
+  border-top: 1px solid #4e4e4e;
+  margin: 6px 0;
+}
+
+.filter-list li.sort-option--active {
+  color: #b672ff;
+  text-decoration: underline;
 }
 </style>

@@ -1,3 +1,11 @@
+<template>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
+</template>
+
+<style scoped>
+
 * {
   margin: 0;
   padding: 0;
@@ -9,8 +17,8 @@ a {
   text-decoration: none;
 }
 
-body {
+:global(body) {
   background-color: #181818;
   color: #ffffff;
 }
-
+</style>

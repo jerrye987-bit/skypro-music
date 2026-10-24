@@ -1,9 +1,7 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2026-10-08',
   modules: ['@nuxt/eslint', '@pinia/nuxt'],
-  css: ['~/assets/main.css'],
   app: {
     head: {
       link: [

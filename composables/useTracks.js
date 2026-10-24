@@ -1,8 +1,6 @@
 import { ref } from 'vue'
 import { usePlayerStore } from '~/stores/player'
 
-const API_URL = 'https://webdev-music-003b5b991590.herokuapp.com'
-
 export const useTracks = () => {
   const tracks = ref([])
   const loading = ref(false)
@@ -20,16 +18,18 @@ export const useTracks = () => {
     loading.value = true
     error.value = null
     try {
-      const response = await fetch(`${API_URL}/catalog/track/all/`)
+      const response = await fetch('/api/catalog/track/all/')
       if (!response.ok) {
         throw new Error('Не удалось получить треки')
       }
       const data = await response.json()
 
-      const formattedTracks = data.data.map((track) => ({
+      const rawTracks = Array.isArray(data) ? data : (data?.data ?? [])
+
+      const formattedTracks = rawTracks.map((track) => ({
         ...track,
-        time: formatDuration(track.duration_in_seconds),}
-      ))
+        time: formatDuration(track.duration_in_seconds),
+      }))
 
       tracks.value = formattedTracks
 

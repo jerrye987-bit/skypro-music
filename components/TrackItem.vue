@@ -3,13 +3,13 @@
     <div class="playlist__track">
       <div class="track__title">
         <div class="track__titleImage">
-            <div
-              class="track-indicator"
-              :class="{
-                'track-indicator--active': isCurrentTrack,
-                'track-indicator--paused': !isPlaying
-              }"
-            />
+          <div
+            class="track-indicator"
+            :class="{
+              'track-indicator--active': isCurrentTrack,
+              'track-indicator--paused': !isPlaying,
+            }"
+          ></div>
           <svg class="track__titleSvg">
             <use xlink:href="/img/icon/sprite.svg#icon-note" />
           </svg>
@@ -38,10 +38,14 @@
 
       <!-- Лайк и время -->
       <div class="track__time">
-        <svg class="track__timeSvg">
+        <svg
+          class="track__timeSvg"
+          :class="{ 'track__timeSvg--liked': isInFavorites }"
+          @click.stop="toggleFavorite"
+        >
           <use xlink:href="/img/icon/sprite.svg#icon-like" />
         </svg>
-        <span class="track__timeText">{{ track?.time || '00:00' }}</span>
+        <span class="track__timeText">{{ formatTime(track?.duration_in_seconds) }}</span>
       </div>
     </div>
   </div>
@@ -49,16 +53,21 @@
 
 <script setup>
 import { usePlayerStore } from '~/stores/player'
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
+import { useAuthFetch } from '~/composables/useAuthFetch'
 
 const props = defineProps({
   track: {
     type: Object,
     required: true,
   },
+  favoriteTracks: {
+    type: Array,
+    default: () => [],
+  },
 })
 
-const emit = defineEmits(['play'])
+const emit = defineEmits(['play', 'refresh-favorites', 'need-login'])
 
 const playerStore = usePlayerStore()
 
@@ -77,6 +86,52 @@ const isPlaying = computed(() => playerStore.isPlaying)
 
 const handlePlay = () => {
   emit('play', props.track)
+}
+const isPending = ref(false)
+
+const isInFavorites = computed(() => {
+  const trackId = String(props.track?._id ?? '')
+  return props.favoriteTracks.some((fav) => String(fav?._id ?? '') === trackId)
+})
+
+const toggleFavorite = async () => {
+  const id = props.track?._id
+
+  if (isPending.value || !id) return
+  isPending.value = true
+
+  try {
+    const res = await useAuthFetch(`/api/catalog/track/${id}/favorite/`, {
+      method: isInFavorites.value ? 'DELETE' : 'POST',
+    })
+
+    if (res.status === 401) {
+      emit('need-login')
+      return
+    }
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      const msg = data?.message || `Ошибка: ${res.status} ${res.statusText}`
+      alert(msg)
+      return
+    }
+
+    emit('refresh-favorites')
+  } catch (e) {
+    console.error('toggleFavorite error:', e)
+    alert('Не удалось изменить избранное. Проверьте соединение.')
+  } finally {
+    isPending.value = false
+  }
+}
+
+const formatTime = (seconds) => {
+  const total = Number(seconds)
+  if (!total || total <= 0) return '00:00'
+  const m = Math.floor(total / 60)
+  const s = Math.floor(total % 60)
+  return `${m}:${String(s).padStart(2, '0')}`
 }
 </script>
 
@@ -195,6 +250,11 @@ const handlePlay = () => {
   cursor: pointer;
 }
 
+.track__timeSvg--liked {
+  fill: #b672ff;
+  stroke: transparent;
+}
+
 .track__timeText {
   font-weight: 400;
   font-size: 16px;
@@ -209,20 +269,16 @@ const handlePlay = () => {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
-
   width: 10px;
   height: 10px;
   border-radius: 50%;
   box-shadow: 0 0 6px rgba(182, 114, 255, 0.5);
-
-  /* По умолчанию — скрыт */
   background-color: transparent;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 }
 
-/* Показываем, только если есть класс --active */
 .track-indicator.track-indicator--active {
   background-color: #b672ff;
   opacity: 1;
@@ -230,13 +286,13 @@ const handlePlay = () => {
   pointer-events: auto;
 }
 
-/* Пульсация: только если активный и НЕ на паузе */
 .track-indicator.track-indicator--active:not(.track-indicator--paused) {
   animation: pulse-dot 1.4s infinite ease-in-out;
 }
 
 @keyframes pulse-dot {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
@@ -245,5 +301,4 @@ const handlePlay = () => {
     opacity: 0.6;
   }
 }
-
 </style>
