@@ -17,7 +17,6 @@ export const useFiltersStore = defineStore('filters', () => {
   const searchQuery = ref('')
   const sortOrder = ref<'asc' | 'desc' | null>(null)
 
-  // Действия — типы в скобках у параметров
   const setFilters = (values: FilterValues) => {
     activeFilters.value = values
   }
@@ -30,13 +29,16 @@ export const useFiltersStore = defineStore('filters', () => {
     sortOrder.value = value
   }
 
+  const setFilterValue = (key: keyof FilterValues, value: string | null) => {
+    activeFilters.value = { ...activeFilters.value, [key]: value }
+  }
+
   const resetFilters = () => {
     activeFilters.value = { исполнителю: null, 'году выпуска': null, жанру: null }
     searchQuery.value = ''
     sortOrder.value = null
   }
 
-  // Геттер-фабрика
   const filteredTracks = computed(() => {
     return (tracks: any[]) => {
       let result = tracks || []
@@ -90,6 +92,7 @@ export const useFiltersStore = defineStore('filters', () => {
     setFilters,
     setSearchQuery,
     setSortOrder,
+    setFilterValue,
     resetFilters,
     filteredTracks,
   }

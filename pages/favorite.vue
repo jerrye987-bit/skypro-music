@@ -3,7 +3,6 @@
     <FilterControls
       :tracks="favoriteTracks"
       title="Мои треки"
-      @filters-update="filtersStore.setFilters"
     />
     <div v-if="isLoading" class="loading-state">
       <p>Загрузка избранного...</p>

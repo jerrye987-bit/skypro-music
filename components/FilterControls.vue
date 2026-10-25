@@ -17,7 +17,7 @@
   <h2 class="centerblock__h2">
     {{ title }}
     <button
-      v-if="activeFilter || Object.values(selectedValues).some(v => v !== null)"
+      v-if="hasActiveFilters"
       class="reset-btn"
       style="margin-left: 15px; font-size: 14px; color: #aaa; background: none; border: none; cursor: pointer;"
       @click="resetFilters"
@@ -64,7 +64,8 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useFiltersStore } from '~/stores/filters'
 
 const props = defineProps({
@@ -72,48 +73,43 @@ const props = defineProps({
   tracks: { type: Array, default: () => [] },
 })
 
-const emit = defineEmits(['filters-update'])
-
 const filtersStore = useFiltersStore()
+const { searchQuery, sortOrder, activeFilters } = storeToRefs(filtersStore)
 
-const searchQuery = ref('')
-const sortOrder = ref('')
-const filters = ['исполнителю', 'году выпуска', 'жанру']
+// Единственное локальное состояние — какой дропдаун открыт (чисто визуальное)
 const activeFilter = ref(null)
 
-const selectedValues = ref({
-  исполнителю: null,
-  'году выпуска': null,
-  жанру: null,
-})
-
+const filters = ['исполнителю', 'году выпуска', 'жанру']
 const sortOptions = [
   { label: 'По умолчанию', value: '' },
   { label: 'Сначала новые', value: 'desc' },
   { label: 'Сначала старые', value: 'asc' },
 ]
 
-const selectSort = (value) => {
-  sortOrder.value = value
-  activeFilter.value = null
-}
-
-
-watch(searchQuery, (v) => filtersStore.setSearchQuery(v))
-watch(sortOrder, (v) => filtersStore.setSortOrder(v === '' ? null : v))
-
-const emitFilters = () => {
-  emit('filters-update', JSON.parse(JSON.stringify(selectedValues.value)))
-}
+const hasActiveFilters = computed(() => {
+  return !!activeFilter.value ||
+    Object.values(activeFilters.value).some(v => v !== null) ||
+    !!searchQuery.value ||
+    !!sortOrder.value
+})
 
 const toggleFilter = (filter) => {
   activeFilter.value = activeFilter.value === filter ? null : filter
 }
 
-const selectFilterValue = (filter, value) => {
-  selectedValues.value[filter] = value
+const selectSort = (value) => {
+  filtersStore.setSortOrder(value === '' ? null : value)
   activeFilter.value = null
-  emitFilters()
+}
+
+const selectFilterValue = (filter, value) => {
+  filtersStore.setFilterValue(filter, value)
+  activeFilter.value = null
+}
+
+const resetFilters = () => {
+  activeFilter.value = null
+  filtersStore.resetFilters()
 }
 
 const getFilterItems = (filter) => {
@@ -177,18 +173,6 @@ const genreItems = computed(() => {
     return a.localeCompare(b)
   })
 })
-
-const resetFilters = () => {
-  activeFilter.value = null
-  selectedValues.value = {
-    'исполнителю': null,
-    'году выпуска': null,
-    'жанру': null,
-  }
-  searchQuery.value = ''
-  sortOrder.value = ''
-  filtersStore.resetFilters()
-}
 </script>
 
 <style scoped>

@@ -3,7 +3,6 @@
     <FilterControls
       :tracks="tracks"
       :title="categoryTitle"
-      @filters-update="filtersStore.setFilters"
     />
 
     <div v-if="isLoading" class="loading-state">

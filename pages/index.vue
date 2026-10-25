@@ -3,7 +3,7 @@
     <FilterControls
       :tracks="tracks"
       title="Треки"
-      @filters-update="filtersStore.setFilters" />
+    />
 
     <PlayList
       :filtered-tracks="filteredTracks"
