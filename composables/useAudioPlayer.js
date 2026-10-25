@@ -3,11 +3,31 @@ import { usePlayerStore } from '~/stores/player'
 export function useAudioPlayer() {
   const playerStore = usePlayerStore()
 
-  watchEffect(() => {
-    if (playerStore.progress >= 100 && playerStore.isPlaying) {
-      playerStore.setPlaying(false)
+  // Трек закончился
+  const handleEnded = () => {
+    if (!playerStore.audioRef) return
+
+    if (playerStore.isLoop) {
+      // Повторяем текущий трек
+      playerStore.audioRef.currentTime = 0
+      playerStore.play()
+      return
     }
-  })
+
+    // Трек закончился — переходим к следующему
+    const currentIndex = playerStore.playlist.findIndex(
+      (t) => t.track_file === playerStore.currentTrack?.track_file,
+    )
+    const isLast = currentIndex === playerStore.playlist.length - 1
+
+    if (playerStore.currentTrack && !isLast) {
+      playerStore.nextTrack()
+    } else {
+      // Плейлист закончился — останавливаемся
+      playerStore.setPlaying(false)
+      playerStore.setProgress(0)
+    }
+  }
 
   const initPlayer = (element) => {
     if (!element) {
@@ -35,13 +55,7 @@ export function useAudioPlayer() {
       playerStore.audioRef.pause()
       playerStore.setPlaying(false)
     } else {
-      try {
-        await playerStore.audioRef.play()
-        playerStore.setPlaying(true)
-      } catch (e) {
-        console.error('Ошибка продолжения воспроизведения', e)
-        playerStore.setPlaying(false)
-      }
+      await playerStore.play()
     }
   }
 
@@ -52,51 +66,21 @@ export function useAudioPlayer() {
       return
     }
 
-    if (!playerStore.currentTrack) {
-      playerStore.setCurrentTrack(track)
-      playerStore.audioRef.src = track.track_file
-      try {
-        await playerStore.audioRef.play()
-        playerStore.setPlaying(true)
-      } catch (e) {
-        console.error('Ошибка запуска нового трека', e)
+    const isSameTrack = playerStore.currentTrack?.track_file === track.track_file
+
+    if (isSameTrack) {
+      // Тот же трек: пауза или продолжение
+      if (playerStore.isPlaying) {
+        playerStore.audioRef.pause()
         playerStore.setPlaying(false)
+      } else {
+        await playerStore.play()
       }
       return
     }
 
-    const isSameTrack = playerStore.currentTrack.track_file === track.track_file
-
-    if (isSameTrack && playerStore.isPlaying) {
-      playerStore.audioRef.pause()
-      playerStore.setPlaying(false)
-      return
-    }
-
-    if (isSameTrack && !playerStore.isPlaying) {
-      try {
-        await playerStore.audioRef.play()
-        playerStore.setPlaying(true)
-      } catch (e) {
-        console.error('Ошибка продолжения воспроизведения', e)
-        playerStore.setPlaying(false)
-      }
-      return
-    }
-
-    playerStore.setCurrentTrack(track)
-    playerStore.audioRef.src = track.track_file
-    playerStore.audioRef.load()
-
-    setTimeout(async () => {
-      try {
-        await playerStore.audioRef.play()
-        playerStore.setPlaying(true)
-      } catch (e) {
-        console.error('Ошибка play() для нового трека', e)
-        playerStore.setPlaying(false)
-      }
-    }, 100)
+    // Другой трек — единственный путь запуска
+    playerStore.startTrack(track)
   }
 
   // Обновляем прогресс трека
@@ -128,6 +112,7 @@ export function useAudioPlayer() {
 
   return {
     initPlayer,
+    handleEnded,
     playTrack,
     togglePlay,
     handleTimeUpdate,

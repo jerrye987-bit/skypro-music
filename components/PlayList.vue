@@ -23,10 +23,10 @@
 
 <script setup>
 import TrackList from './TrackList.vue'
-import { usePlayerStore } from '~/stores/player.js'
-import { defineProps, defineEmits } from 'vue'
+import { useAudioPlayer } from '~/composables/useAudioPlayer'
+import { watch } from 'vue';
 
-defineProps({
+const props = defineProps({
   filteredTracks: {
     type: Array,
     default: () => [],
@@ -37,13 +37,22 @@ defineProps({
   },
 })
 
-const emit = defineEmits(['play', 'refresh-favorites', 'need-login'])
-
 const playerStore = usePlayerStore()
 
+watch(
+  () => props.filteredTracks,
+  (list) => {
+    playerStore.setPlaylist(list)
+  },
+  { immediate: true }
+)
+
+const emit = defineEmits(['play', 'refresh-favorites', 'need-login'])
+
+const { playTrack } = useAudioPlayer()
+
 const handlePlayTrack = (track) => {
-  playerStore.setCurrentTrack(track)
-  playerStore.play()
+  playTrack(track)
 }
 
 const handleRefreshFavorites = () => {
