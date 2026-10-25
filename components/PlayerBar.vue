@@ -80,13 +80,13 @@
                 min="0"
                 max="100"
                 @input="updateVolume"
-              >
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
-    <audio ref="audioRef" @timeupdate="handleTimeUpdate" />
+    <audio ref="audioRef" preload="none" @timeupdate="handleTimeUpdate" />
   </div>
 </template>
 
@@ -102,14 +102,11 @@ const playIconPath = computed(() =>
   playerStore.isPlaying ? '/img/icon/sprite.svg#icon-pause' : '/img/icon/sprite.svg#icon-play',
 )
 
-const { playTrack, handleTimeUpdate, seekTo, updateVolume, initPlayer } = useAudioPlayer()
+const { togglePlay, handleTimeUpdate, seekTo, updateVolume, initPlayer } = useAudioPlayer()
 
 const handlePlay = () => {
-  if (playerStore.currentTrack) {
-    playTrack(playerStore.currentTrack)
-  }
+  togglePlay()
 }
-
 const handleProgressClick = (event) => {
   if (!playerStore.currentTrack) return
 

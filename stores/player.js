@@ -20,7 +20,30 @@ export const usePlayerStore = defineStore('player', {
     // Установить текущий трек
     setCurrentTrack(track) {
       this.currentTrack = track
+
+      if (this.audioRef && track?.track_file) {
+        this.audioRef.src = track.track_file
+        this.play()
+      }
     },
+
+    play() {
+    this.isPlaying = true
+    if (this.audioRef) {
+      return this.audioRef.play().catch(e => {
+        console.warn('Не удалось запустить аудио:', e)
+        return Promise.resolve()
+      })
+    }
+    return Promise.resolve()
+  },
+
+  pause() {
+    this.isPlaying = false
+    if (this.audioRef) {
+      this.audioRef.pause()
+    }
+  },
 
     // Установить плейлист
     setPlaylist(tracks) {
