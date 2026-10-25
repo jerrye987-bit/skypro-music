@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
 
 // Типы — сразу после импортов, до определения стора
 type FilterValues = {
