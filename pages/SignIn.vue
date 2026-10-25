@@ -5,7 +5,13 @@
         <form class="modal__form" @submit.prevent="handleSubmit">
           <NuxtLink to="/">
             <div class="modal__logo">
-              <img src="/img/logo_modal.svg" alt="logo">
+              <NuxtImg
+                class="modal__logo-img"
+                src="/img/logo_modal.svg"
+                alt="Логотип Skypro.Music"
+                width="140"
+                height="21"
+              />
             </div>
           </NuxtLink>
 
@@ -17,7 +23,7 @@
               name="login"
               placeholder="Почта"
               autocomplete="email"
-            >
+            />
           </div>
 
           <div class="field-group">
@@ -28,7 +34,7 @@
               name="password"
               placeholder="Пароль"
               autocomplete="current-password"
-            >
+            />
           </div>
 
           <button class="modal__btnEnter" type="submit">Войти</button>
@@ -37,9 +43,7 @@
             {{ errorMessage }}
           </p>
 
-          <NuxtLink to="/signup" class="modal__btnSignup">
-            Зарегистрироваться
-          </NuxtLink>
+          <NuxtLink to="/signup" class="modal__btnSignup"> Зарегистрироваться </NuxtLink>
         </form>
       </div>
     </div>
@@ -167,7 +171,7 @@ const handleSubmit = async () => {
   background-color: transparent;
 }
 
-.modal__logo img {
+.modal__logo-img {
   width: 140px;
   height: auto;
 }
