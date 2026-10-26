@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { usePlayerStore } from '~/stores/player'
+import { formatDuration } from '~/utils/format'
 
 export const useTracks = () => {
   const tracks = ref([])
@@ -7,16 +8,6 @@ export const useTracks = () => {
   const error = ref(null)
 
   const playerStore = usePlayerStore()
-
-  const formatDuration = (seconds) => {
-    if (typeof seconds !== 'number' || isNaN(seconds) || seconds < 0) {
-      return ''
-    }
-
-    const minutes = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
-  }
 
   const fetchTracks = async () => {
     loading.value = true

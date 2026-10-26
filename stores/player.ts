@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { shuffleTracks } from '~/utils/shuffle'
 
 interface Track {
   id: number
@@ -69,20 +70,7 @@ export const usePlayerStore = defineStore('player', {
       if (this.isShuffled) {
         // Shuffle активен — новый список сразу перемешиваем
         this.originalPlaylist = [...tracks]
-
-        const shuffled = [...tracks]
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1))
-
-          const a = shuffled[i]
-          const b = shuffled[j]
-          if (a !== undefined && b !== undefined) {
-            shuffled[i] = b
-            shuffled[j] = a
-          }
-        }
-
-        this.playlist = shuffled
+        this.playlist = shuffleTracks(tracks)
       } else {
         this.playlist = [...tracks]
         this.originalPlaylist = []
@@ -165,20 +153,7 @@ export const usePlayerStore = defineStore('player', {
       if (!this.isShuffled) {
         // Запоминаем исходный порядок и перемешиваем копию
         this.originalPlaylist = [...this.playlist]
-
-        const shuffled = [...this.playlist]
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1))
-
-          const a = shuffled[i]
-          const b = shuffled[j]
-          if (a !== undefined && b !== undefined) {
-            shuffled[i] = b
-            shuffled[j] = a
-          }
-        }
-
-        this.playlist = shuffled
+        this.playlist = shuffleTracks(this.playlist)
         this.isShuffled = true
       } else {
         // Возвращаем исходный порядок
