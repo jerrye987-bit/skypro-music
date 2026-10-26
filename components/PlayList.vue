@@ -24,7 +24,6 @@
 <script setup>
 import TrackList from './TrackList.vue'
 import { useAudioPlayer } from '~/composables/useAudioPlayer'
-import { watch } from 'vue';
 
 const props = defineProps({
   filteredTracks: {
@@ -37,21 +36,13 @@ const props = defineProps({
   },
 })
 
-const playerStore = usePlayerStore()
-
-watch(
-  () => props.filteredTracks,
-  (list) => {
-    playerStore.setPlaylist(list)
-  },
-  { immediate: true }
-)
-
 const emit = defineEmits(['play', 'refresh-favorites', 'need-login'])
 
+const playerStore = usePlayerStore()
 const { playTrack } = useAudioPlayer()
 
 const handlePlayTrack = (track) => {
+  playerStore.setPlaylist(props.filteredTracks)
   playTrack(track)
 }
 

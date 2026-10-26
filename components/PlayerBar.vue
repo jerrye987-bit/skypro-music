@@ -108,7 +108,6 @@
 <script setup>
 import { usePlayerStore } from '~/stores/player'
 import { useAudioPlayer } from '~/composables/useAudioPlayer'
-import { ref, onMounted, nextTick, computed } from 'vue'
 
 const playerStore = usePlayerStore()
 const audioRef = ref(null)

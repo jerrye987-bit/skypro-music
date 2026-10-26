@@ -2,13 +2,7 @@ const BASE_URL = '/api'
 
 let refreshPromise: Promise<string | null> | null = null
 
-const clearTokens = () => {
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
-  localStorage.removeItem('user')
-}
-
-const refreshTokens = async (): Promise<string | null> => {
+export const refreshTokens = async (): Promise<string | null> => {
   const refresh = localStorage.getItem('refresh_token')
   if (!refresh) return null
 
@@ -58,7 +52,8 @@ export const useAuthFetch = async (url: string, options: RequestInit = {}) => {
     if (newToken) {
       res = await makeRequest(newToken)
     } else {
-      clearTokens()
+      const authStore = useAuthStore()
+      authStore.logout()
     }
   }
 
