@@ -19,34 +19,40 @@
       <div class="sidebar__list">
         <div class="sidebar__item">
           <NuxtLink to="/category/2" class="sidebar__link">
-            <img
+            <NuxtImg
               class="sidebar__img"
               src="/img/playlist01.png"
               alt="Плейлист дня"
               width="250"
-              height="170"
+              height="150"
+              loading="lazy"
+              placeholder="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='150'%3E%3Crect width='100%25' height='100%25' fill='%23313131'/%3E%3C/svg%3E"
             />
           </NuxtLink>
         </div>
         <div class="sidebar__item">
           <NuxtLink to="/category/3" class="sidebar__link">
-            <img
+            <NuxtImg
               class="sidebar__img"
               src="/img/playlist02.png"
               alt="100 танцевальных хитов"
               width="250"
-              height="170"
+              height="150"
+              loading="lazy"
+              placeholder="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='150'%3E%3Crect width='100%25' height='100%25' fill='%23313131'/%3E%3C/svg%3E"
             />
           </NuxtLink>
         </div>
         <div class="sidebar__item">
           <NuxtLink to="/category/4" class="sidebar__link">
-            <img
+            <NuxtImg
               class="sidebar__img"
               src="/img/playlist03.png"
               alt="Инди-заряд"
               width="250"
-              height="170"
+              height="150"
+              loading="lazy"
+              placeholder="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='150'%3E%3Crect width='100%25' height='100%25' fill='%23313131'/%3E%3C/svg%3E"
             />
           </NuxtLink>
         </div>
@@ -56,10 +62,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useFavoriteTracks } from '~/composables/useFavoriteTracks'
-import { navigateTo } from '#imports'
 
 const authStore = useAuthStore()
 
@@ -139,6 +143,7 @@ const handleLogout = async () => {
 .sidebar__img {
   width: 100%;
   height: auto;
+  aspect-ratio: 250 / 150;
   object-fit: cover;
 }
 </style>

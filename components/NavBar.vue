@@ -1,22 +1,16 @@
 <template>
   <nav class="main__nav">
     <div class="nav__logo">
-      <img width="250" height="170" class="logo__image" src="/img/logo.svg" alt="logo" >
+      <NuxtImg class="logo__image" src="/img/logo.svg" width="113.33" height="17" alt="Логотип" />
     </div>
 
-    <div
-      class="nav__burger"
-      @click="toggleMenu"
-    >
+    <div class="nav__burger" @click="toggleMenu">
       <span class="burger__line" />
       <span class="burger__line" />
       <span class="burger__line" />
     </div>
 
-    <div
-      class="nav__menu"
-      :class="{ 'nav__menu--open': isMenuOpen }"
-    >
+    <div class="nav__menu" :class="{ 'nav__menu--open': isMenuOpen }">
       <ul class="menu__list">
         <li class="menu__item">
           <NuxtLink to="/" class="menu__link">Главное</NuxtLink>
@@ -27,14 +21,12 @@
         <li class="menu__item">
           <NuxtLink to="/signin" class="menu__link">Войти</NuxtLink>
         </li>
-    </ul>
-  </div>
-</nav>
+      </ul>
+    </div>
+  </nav>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-
 const isMenuOpen = ref(false)
 
 const toggleMenu = () => {

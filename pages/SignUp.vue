@@ -5,7 +5,13 @@
         <form class="modal__form" @submit.prevent="handleSubmit">
           <NuxtLink to="/">
             <div class="modal__logo">
-              <img src="/img/logo_modal.svg" alt="logo" />
+              <NuxtImg
+                class="modal__logo-img"
+                src="/img/logo_modal.svg"
+                alt="Логотип Skypro.Music"
+                width="140"
+                height="21"
+              />
             </div>
           </NuxtLink>
 
@@ -57,12 +63,10 @@
 
           <button class="modal__btnEnter" type="submit">Зарегистрироваться</button>
 
-          <!-- Сообщение об ошибке (теперь оно будет красным и заметным) -->
           <p v-if="errorMessage" class="error-message">
             {{ errorMessage }}
           </p>
 
-          <!-- Сообщение об успехе -->
           <div v-if="successMessage" class="success-block">
             <p class="success-message">{{ successMessage }}</p>
           </div>
@@ -75,10 +79,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { navigateTo } from '#imports'
-import { showError } from '#app'
-
 useHead({
   title: 'Регистрация | Skypro.Music',
 })
@@ -235,7 +235,7 @@ const handleSubmit = async () => {
   background-color: transparent;
 }
 
-.modal__logo img {
+.modal__logo-img {
   width: 140px;
   height: auto;
 }

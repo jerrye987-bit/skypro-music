@@ -9,7 +9,11 @@
       <div class="bar__playerBlock">
         <div class="bar__player player">
           <div class="player__controls">
-            <div class="player__btnPrev">
+            <div
+              class="player__btnPrev"
+              :class="{ disabled: playerStore.playlist[0]?.track_file === playerStore.currentTrack?.track_file }"
+              @click="playerStore.prevTrack()"
+            >
               <svg class="player__btnPrevSvg">
                 <use xlink:href="/img/icon/sprite.svg#icon-prev" />
               </svg>
@@ -19,17 +23,28 @@
                 <use :xlink:href="playIconPath" />
               </svg>
             </div>
-            <div class="player__btnNext">
+            <div
+              class="player__btnNext"
+              :class="{ disabled: playerStore.playlist[playerStore.playlist.length - 1]?.track_file === playerStore.currentTrack?.track_file }"
+              @click="playerStore.nextTrack()">
               <svg class="player__btnNextSvg">
                 <use xlink:href="/img/icon/sprite.svg#icon-next" />
               </svg>
             </div>
-            <div class="player__btnRepeat btnIcon">
+            <div
+              class="player__btnRepeat btnIcon"
+              :class="{ active: playerStore.isLoop}"
+              @click="playerStore.toggleLoop"
+            >
               <svg class="player__btnRepeatSvg">
                 <use xlink:href="/img/icon/sprite.svg#icon-repeat" />
               </svg>
             </div>
-            <div class="player__btnShuffle btnIcon">
+            <div
+              class="player__btnShuffle btnIcon"
+              :class="{ active: playerStore.isShuffled }"
+              @click="playerStore.toggleShuffle()"
+            >
               <svg class="player__btnShuffleSvg">
                 <use xlink:href="/img/icon/sprite.svg#icon-shuffle" />
               </svg>
@@ -86,7 +101,7 @@
         </div>
       </div>
     </div>
-    <audio ref="audioRef" preload="none" @timeupdate="handleTimeUpdate" />
+    <audio ref="audioRef" preload="none" @timeupdate="handleTimeUpdate" @ended="handleEnded" />
   </div>
 </template>
 
@@ -102,7 +117,7 @@ const playIconPath = computed(() =>
   playerStore.isPlaying ? '/img/icon/sprite.svg#icon-pause' : '/img/icon/sprite.svg#icon-play',
 )
 
-const { togglePlay, handleTimeUpdate, seekTo, updateVolume, initPlayer } = useAudioPlayer()
+const { togglePlay, handleTimeUpdate, seekTo, updateVolume, initPlayer, handleEnded } = useAudioPlayer()
 
 const handlePlay = () => {
   togglePlay()
@@ -265,6 +280,22 @@ onMounted(async () => {
   height: 12px;
   fill: transparent;
   stroke: #696969;
+}
+
+.player__btnRepeat.active .player__btnRepeatSvg,
+.player__btnShuffle.active .player__btnShuffleSvg {
+  stroke: #b672ff;
+}
+
+.player__btnPrev.disabled,
+.player__btnNext.disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+.player__btnPrev.disabled svg,
+.player__btnNext.disabled svg {
+  stroke: #4e4e4e;
 }
 
 .player__trackPlay {

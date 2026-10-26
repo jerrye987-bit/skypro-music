@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
-// Типы — сразу после импортов, до определения стора
 type FilterValues = {
   исполнителю: string | null
   'году выпуска': string | null
@@ -9,7 +8,6 @@ type FilterValues = {
 }
 
 export const useFiltersStore = defineStore('filters', () => {
-  // Состояние
   const activeFilters = ref<FilterValues>({
     исполнителю: null,
     'году выпуска': null,

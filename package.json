@@ -9,6 +9,7 @@
     "preview": "nuxt preview"
   },
   "dependencies": {
+    "@nuxt/image": "^2.2.0",
     "@pinia/nuxt": "^1.0.2",
     "braces": "^3.0.3",
     "devalue": "^6.0.2",
