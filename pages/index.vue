@@ -20,7 +20,6 @@ import { useTracks } from '~/composables/useTracks'
 import { useFavoriteTracks } from '~/composables/useFavoriteTracks'
 import { useFiltersStore } from '~/stores/filters'
 import { computed, onMounted } from 'vue'
-import { useHead } from '@unhead/vue'
 
 useHead({
   title: 'Главная | Skypro.Music',

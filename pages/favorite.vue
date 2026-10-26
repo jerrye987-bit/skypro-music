@@ -27,7 +27,6 @@ import PlayList from '~/components/PlayList.vue'
 import { useFavoriteTracks } from '~/composables/useFavoriteTracks'
 import { useFiltersStore } from '~/stores/filters'
 import { computed } from 'vue'
-import { useHead } from '@unhead/vue'
 import { navigateTo } from '#app'
 
 useHead({

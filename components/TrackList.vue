@@ -13,7 +13,6 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
 import TrackItem from './TrackItem.vue'
 
 const emit = defineEmits(['play', 'refresh-favorites', 'need-login'])
