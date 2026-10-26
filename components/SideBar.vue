@@ -7,7 +7,7 @@
           {{ userName || 'Гость' }}
         </p>
 
-        <div v-if="showLogoutButton" class="sidebar__icon" @click="handleLogout">
+        <div v-if="showLogoutButton" data-test="logout" class="sidebar__icon" @click="handleLogout">
           <svg width="40" height="40">
             <use xlink:href="/img/icon/sprite.svg#logout" />
           </svg>

@@ -10,8 +10,12 @@
         <div class="bar__player player">
           <div class="player__controls">
             <div
+              data-test="prev"
               class="player__btnPrev"
-              :class="{ disabled: playerStore.playlist[0]?.track_file === playerStore.currentTrack?.track_file }"
+              :class="{
+                disabled:
+                  playerStore.playlist[0]?.track_file === playerStore.currentTrack?.track_file,
+              }"
               @click="playerStore.prevTrack()"
             >
               <svg class="player__btnPrevSvg">
@@ -24,16 +28,22 @@
               </svg>
             </div>
             <div
+              data-test="next"
               class="player__btnNext"
-              :class="{ disabled: playerStore.playlist[playerStore.playlist.length - 1]?.track_file === playerStore.currentTrack?.track_file }"
-              @click="playerStore.nextTrack()">
+              :class="{
+                disabled:
+                  playerStore.playlist[playerStore.playlist.length - 1]?.track_file ===
+                  playerStore.currentTrack?.track_file,
+              }"
+              @click="playerStore.nextTrack()"
+            >
               <svg class="player__btnNextSvg">
                 <use xlink:href="/img/icon/sprite.svg#icon-next" />
               </svg>
             </div>
             <div
               class="player__btnRepeat btnIcon"
-              :class="{ active: playerStore.isLoop}"
+              :class="{ active: playerStore.isLoop }"
               @click="playerStore.toggleLoop"
             >
               <svg class="player__btnRepeatSvg">
@@ -41,6 +51,7 @@
               </svg>
             </div>
             <div
+              data-test="shuffle"
               class="player__btnShuffle btnIcon"
               :class="{ active: playerStore.isShuffled }"
               @click="playerStore.toggleShuffle()"
@@ -116,7 +127,8 @@ const playIconPath = computed(() =>
   playerStore.isPlaying ? '/img/icon/sprite.svg#icon-pause' : '/img/icon/sprite.svg#icon-play',
 )
 
-const { togglePlay, handleTimeUpdate, seekTo, updateVolume, initPlayer, handleEnded } = useAudioPlayer()
+const { togglePlay, handleTimeUpdate, seekTo, updateVolume, initPlayer, handleEnded } =
+  useAudioPlayer()
 
 const handlePlay = () => {
   togglePlay()

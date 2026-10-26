@@ -6,7 +6,9 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview"
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "test": "vitest run"
   },
   "dependencies": {
     "@nuxt/image": "^2.2.0",
@@ -22,6 +24,7 @@
   "devDependencies": {
     "@nuxt/eslint": "^1.17.0",
     "@nuxt/test-utils": "^4.3.4",
+    "@pinia/testing": "^2.0.2",
     "@vue/test-utils": "^2.5.1",
     "eslint": "^10.12.0",
     "glob": "^13.0.6",
