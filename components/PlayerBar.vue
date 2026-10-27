@@ -86,7 +86,10 @@
                 :class="{ disabled: !playerStore.currentTrack }"
                 @click="toggleFavorite"
               >
-                <svg class="trackPlay__likeSvg" :class="{ 'trackPlay__likeSvg--liked': isInFavorites }">
+                <svg
+                  class="trackPlay__likeSvg"
+                  :class="{ 'trackPlay__likeSvg--liked': isInFavorites }"
+                >
                   <use xlink:href="/img/icon/sprite.svg#icon-like" />
                 </svg>
               </div>
@@ -194,9 +197,21 @@ onMounted(async () => {
   await nextTick()
   if (audioRef.value) {
     initPlayer(audioRef.value)
+
+    if (playerStore.currentTrack?.track_file) {
+      audioRef.value.src = playerStore.currentTrack.track_file
+      playerStore.setProgress(0)
+    }
   } else {
     console.error('audioRef не найден в DOM!')
   }
+})
+
+onBeforeUnmount(() => {
+  if (playerStore.isPlaying) {
+    playerStore.isPlaying = false
+  }
+  playerStore.setAudioRef(null)
 })
 </script>
 
