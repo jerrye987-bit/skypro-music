@@ -81,8 +81,12 @@
               </div>
             </div>
             <div class="trackPlay__likeDis">
-              <div class="trackPlay__like btnIcon">
-                <svg class="trackPlay__likeSvg">
+              <div
+                class="trackPlay__like btnIcon"
+                :class="{ disabled: !playerStore.currentTrack }"
+                @click="toggleFavorite"
+              >
+                <svg class="trackPlay__likeSvg" :class="{ 'trackPlay__likeSvg--liked': isInFavorites }">
                   <use xlink:href="/img/icon/sprite.svg#icon-like" />
                 </svg>
               </div>
@@ -119,6 +123,7 @@
 <script setup>
 import { usePlayerStore } from '~/stores/player'
 import { useAudioPlayer } from '~/composables/useAudioPlayer'
+import { useFavoriteTracks } from '~/composables/useFavoriteTracks'
 
 const playerStore = usePlayerStore()
 const audioRef = ref(null)
@@ -129,6 +134,48 @@ const playIconPath = computed(() =>
 
 const { togglePlay, handleTimeUpdate, seekTo, updateVolume, initPlayer, handleEnded } =
   useAudioPlayer()
+
+const { favoriteTracks, setFavoriteState } = useFavoriteTracks()
+const isPending = ref(false)
+
+const isInFavorites = computed(() => {
+  const trackId = String(playerStore.currentTrack?._id ?? '')
+  return favoriteTracks.value.some((fav) => String(fav?._id ?? '') === trackId)
+})
+
+const toggleFavorite = async () => {
+  const track = playerStore.currentTrack
+  const id = track?._id
+
+  if (isPending.value || !id) return
+
+  const wasLiked = isInFavorites.value
+  setFavoriteState(track, !wasLiked) // мгновенное обновление
+  isPending.value = true
+
+  try {
+    const res = await useAuthFetch(`/api/catalog/track/${id}/favorite/`, {
+      method: wasLiked ? 'DELETE' : 'POST',
+    })
+
+    if (res.status === 401) {
+      setFavoriteState(track, wasLiked) // откат
+      return navigateTo('/signin')
+    }
+
+    if (!res.ok) {
+      setFavoriteState(track, wasLiked) // откат
+      const data = await res.json().catch(() => ({}))
+      alert(data?.message || `Ошибка: ${res.status} ${res.statusText}`)
+    }
+  } catch (e) {
+    setFavoriteState(track, wasLiked) // откат
+    console.error('toggleFavorite error:', e)
+    alert('Не удалось изменить избранное. Проверьте соединение.')
+  } finally {
+    isPending.value = false
+  }
+}
 
 const handlePlay = () => {
   togglePlay()
@@ -396,6 +443,16 @@ onMounted(async () => {
   stroke: #696969;
 }
 
+.trackPlay__likeSvg--liked {
+  fill: #b672ff;
+  stroke: transparent;
+}
+
+.trackPlay__like.disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
 .volume__content {
   display: flex;
   flex-direction: row;
@@ -464,5 +521,11 @@ onMounted(async () => {
   fill: #696969;
   stroke: #ffffff;
   cursor: pointer;
+}
+
+.trackPlay__like:hover .trackPlay__likeSvg--liked,
+.trackPlay__like:active .trackPlay__likeSvg--liked {
+  fill: #b672ff;
+  stroke: transparent;
 }
 </style>

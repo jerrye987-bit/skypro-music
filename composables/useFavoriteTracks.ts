@@ -56,11 +56,25 @@ export const useFavoriteTracks = () => {
     favoriteTracks.value = []
   }
 
+  const setFavoriteState = (track: Track, liked: boolean) => {
+    const id = String(track._id)
+    if (liked) {
+      favoriteTracks.value = [
+        track,
+        ...favoriteTracks.value.filter((t) => String(t._id) !== id),
+      ]
+    } else {
+      favoriteTracks.value = favoriteTracks.value.filter((t) => String(t._id) !== id)
+    }
+  }
+
   return {
     favoriteTracks,
     loading,
+    isLoading: loading,
     error,
     fetchFavoriteTracks,
     clearFavoriteTracks,
+    setFavoriteState,
   }
 }
