@@ -1,75 +1,31 @@
-# Nuxt Minimal Starter
+# Skypro.Music
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Музыкальный плеер с каталогом треков, избранным и авторизацией.
 
-## Setup
+## Возможности
 
-Make sure to install dependencies:
+- **Каталог треков** с фильтрацией по исполнителю, году выпуска и жанрам, а также поиском по названию.
+- **Плеер**: play/pause, переключение треков, повтор, перемешивание (shuffle), регулировка громкости, кликабельный прогресс-бар.
+- **Лайки**: трек можно добавить в избранное как из списка, так и прямо из плеера. Список избранного — единый на всё приложение, поэтому лайки синхронны на всех страницах.
+- **Авторизация**: вход по email и паролю.
+- **Страница «Мои треки»** — приватный маршрут: без авторизации доступ закрыт.
 
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+## Тесты
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+pnpm run test:coverage   # юнит-тесты с отчётом о покрытии
 ```
 
-## Production
+77 тестов, покрытие 100% по сторам (`filters`, `player`) и утилитам (`format`, `shuffle`).
 
-Build the application for production:
+## Структура проекта
 
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
+components/     — Vue-компоненты (PlayList, TrackItem, PlayerBar, SideBar и др.)
+composables/    — переиспользуемая логика (useAuthFetch, useFavoriteTracks, useAudioPlayer)
+stores/         — сторы Pinia (player, filters, auth)
+pages/          — страницы приложения (каталог, «Мои треки», вход, регистрация)
+middleware/     — auth-мiddleware для приватных маршрутов
+tests/          — юнит-тесты (Vitest)
 
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
