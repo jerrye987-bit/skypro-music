@@ -19,6 +19,8 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const initAuth = () => {
+    if (!import.meta.client) return
+
     const access = localStorage.getItem('access_token')
     if (access) {
       try {
@@ -41,14 +43,11 @@ export const useAuthStore = defineStore('auth', () => {
     isCriticalError.value = false
 
     try {
-      const res = await fetch(
-        '/api/user/login/',
-        {
-          method: 'POST',
-          body: JSON.stringify({ email, password }),
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
+      const res = await fetch('/api/user/login/', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+        headers: { 'Content-Type': 'application/json' },
+      })
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
@@ -59,14 +58,11 @@ export const useAuthStore = defineStore('auth', () => {
 
       const data = await res.json()
 
-      const tokenRes = await fetch(
-        '/api/user/token/', 
-        {
-          method: 'POST',
-          body: JSON.stringify({ email, password }),
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
+      const tokenRes = await fetch('/api/user/token/', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+        headers: { 'Content-Type': 'application/json' },
+      })
 
       if (!tokenRes.ok) {
         const tokensData = await tokenRes.json().catch(() => ({}))
@@ -85,7 +81,8 @@ export const useAuthStore = defineStore('auth', () => {
       }
     } catch (e: any) {
       console.error('Критическая ошибка в login:', e)
-      error.value = e instanceof Error ? e.message : 'Произошла непредвиденная ошибка. Попробуйте позже.'
+      error.value =
+        e instanceof Error ? e.message : 'Произошла непредвиденная ошибка. Попробуйте позже.'
       isCriticalError.value = true
     } finally {
       isLoading.value = false

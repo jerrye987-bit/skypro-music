@@ -1,18 +1,19 @@
 <template>
   <div class="playlist-sidebar">
     <!-- Блок пользователя -->
-    <div class="sidebar__personal">
-      <p class="sidebar__personalName">
-        {{ userName || 'Гость' }}
-      </p>
+    <ClientOnly>
+      <div class="sidebar__personal">
+        <p class="sidebar__personalName">
+          {{ userName || 'Гость' }}
+        </p>
 
-      <!-- Кнопка выхода: добавляем @click и делаем курсор явно -->
-      <div v-if="showLogoutButton" class="sidebar__icon" @click="handleLogout">
-        <svg width="40" height="40">
-          <use xlink:href="/img/icon/sprite.svg#logout" />
-        </svg>
+        <div v-if="showLogoutButton" data-test="logout" class="sidebar__icon" @click="handleLogout">
+          <svg width="40" height="40">
+            <use xlink:href="/img/icon/sprite.svg#logout" />
+          </svg>
+        </div>
       </div>
-    </div>
+    </ClientOnly>
 
     <!-- Список карточек плейлистов -->
     <div class="sidebar__block">
@@ -62,7 +63,6 @@
 </template>
 
 <script setup>
-import { useAuthStore } from '~/stores/auth'
 import { useFavoriteTracks } from '~/composables/useFavoriteTracks'
 
 const authStore = useAuthStore()

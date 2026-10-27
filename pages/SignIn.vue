@@ -51,11 +51,6 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { navigateTo } from '#imports'
-import { useAuthStore } from '~/stores/auth'
-import { showError } from '#app'
-
 useHead({
   title: 'Вход | Skypro.Music',
 })

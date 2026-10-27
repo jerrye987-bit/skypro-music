@@ -39,7 +39,7 @@ export const useFiltersStore = defineStore('filters', () => {
   }
 
   const filteredTracks = computed(() => {
-    return (tracks: any[]) => {
+    return (tracks: any[] | null) => {
       let result = tracks || []
 
       if (searchQuery.value.trim()) {

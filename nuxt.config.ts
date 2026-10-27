@@ -1,7 +1,8 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@pinia/nuxt', '@nuxt/image'],
+  compatibilityDate: '2026-10-26',
+  modules: ['@nuxt/eslint', '@nuxt/test-utils', '@pinia/nuxt', '@nuxt/image'],
   app: {
     head: {
       link: [

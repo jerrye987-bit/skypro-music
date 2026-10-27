@@ -29,8 +29,6 @@ import PlayList from '~/components/PlayList.vue'
 import { useCatalogTracks } from '~/composables/useCatalogTracks'
 import { useFavoriteTracks } from '~/composables/useFavoriteTracks'
 import { useFiltersStore } from '~/stores/filters'
-import { computed, watch } from 'vue'
-import { navigateTo } from '#app'
 
 const route = useRoute()
 

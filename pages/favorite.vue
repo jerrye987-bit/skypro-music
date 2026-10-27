@@ -26,8 +26,6 @@ import FilterControls from '~/components/FilterControls.vue'
 import PlayList from '~/components/PlayList.vue'
 import { useFavoriteTracks } from '~/composables/useFavoriteTracks'
 import { useFiltersStore } from '~/stores/filters'
-import { computed } from 'vue'
-import { navigateTo } from '#app'
 
 useHead({
   title: 'Мои треки | Skypro.Music',

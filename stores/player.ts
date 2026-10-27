@@ -1,11 +1,28 @@
 import { defineStore } from 'pinia'
+import { shuffleTracks } from '~/utils/shuffle'
+
+interface Track {
+  id: number
+  name: string
+  track_file: string
+}
+
+interface AudioElement {
+  src: string
+  volume: number
+  load(): void
+  play(): Promise<void>
+  pause(): void
+}
 
 export const usePlayerStore = defineStore('player', {
   state: () => ({
     // Текущий трек
-    currentTrack: null,
+    currentTrack: null as Track | null,
     // Список треков
-    playlist: [],
+    playlist: [] as Track[],
+    // Исходный порядок плейлиста (для отката shuffle)
+    originalPlaylist: [] as Track[],
     // Играет ли сейчас
     isPlaying: false,
     // Прогресс воспроизведения (0-100)
@@ -13,25 +30,24 @@ export const usePlayerStore = defineStore('player', {
     // Громкость (0-100)
     volume: 50,
     // Ссылка на аудиотег
-    audioRef: null,
+    audioRef: null as AudioElement | null,
     // Повтор текущего трека
     isLoop: false,
     // Включено ли перемешивание
     isShuffled: false,
-    // Исходный порядок плейлиста (для отката shuffle)
-    originalPlaylist: [],
   }),
 
   actions: {
     // Установить текущий трек
-    setCurrentTrack(track) {
+    setCurrentTrack(track: Track) {
       this.currentTrack = track
     },
 
     play() {
       if (!this.audioRef) return Promise.resolve()
 
-      return this.audioRef.play()
+      return this.audioRef
+        .play()
         .then(() => {
           this.isPlaying = true
         })
@@ -42,26 +58,19 @@ export const usePlayerStore = defineStore('player', {
         })
     },
 
-  pause() {
-    this.isPlaying = false
-    if (this.audioRef) {
-      this.audioRef.pause()
-    }
-  },
+    pause() {
+      this.isPlaying = false
+      if (this.audioRef) {
+        this.audioRef.pause()
+      }
+    },
 
     // Установить плейлист
-    setPlaylist(tracks) {
+    setPlaylist(tracks: Track[]) {
       if (this.isShuffled) {
         // Shuffle активен — новый список сразу перемешиваем
         this.originalPlaylist = [...tracks]
-
-        const shuffled = [...tracks]
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1))
-          ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-        }
-
-        this.playlist = shuffled
+        this.playlist = shuffleTracks(tracks)
       } else {
         this.playlist = [...tracks]
         this.originalPlaylist = []
@@ -69,22 +78,22 @@ export const usePlayerStore = defineStore('player', {
     },
 
     // Установить прогресс
-    setProgress(progress) {
+    setProgress(progress: number) {
       this.progress = progress
     },
 
     // Установить громкость
-    setVolume(volume) {
+    setVolume(volume: number) {
       this.volume = volume
     },
 
     // Установить состояние воспроизведения
-    setPlaying(isPlaying) {
+    setPlaying(isPlaying: boolean) {
       this.isPlaying = isPlaying
     },
 
     // Установить ссылку на аудиоэлемент
-    setAudioRef(element) {
+    setAudioRef(element: AudioElement | null) {
       this.audioRef = element
       if (this.audioRef) {
         this.audioRef.volume = this.volume / 100
@@ -92,8 +101,8 @@ export const usePlayerStore = defineStore('player', {
     },
 
     // Внутренний хелпер: поставить трек и запустить
-    startTrack(track) {
-      this.currentTrack = track
+    startTrack(track: Track | undefined) {
+      this.currentTrack = track ?? null
 
       if (this.audioRef && track?.track_file) {
         this.audioRef.src = track.track_file
@@ -107,12 +116,12 @@ export const usePlayerStore = defineStore('player', {
       if (!this.playlist.length || !this.currentTrack) return
 
       const currentIndex = this.playlist.findIndex(
-        (t) => t.track_file === this.currentTrack.track_file
+        (t) => t.track_file === this.currentTrack?.track_file,
       )
       const isLast = currentIndex === this.playlist.length - 1
 
       // На последнем треке вперёд нельзя
-      if (isLast) return
+      if (isLast || currentIndex === -1) return
 
       this.startTrack(this.playlist[currentIndex + 1])
     },
@@ -122,22 +131,20 @@ export const usePlayerStore = defineStore('player', {
       if (!this.playlist.length || !this.currentTrack) return
 
       const currentIndex = this.playlist.findIndex(
-        (t) => t.track_file === this.currentTrack.track_file
+        (t) => t.track_file === this.currentTrack?.track_file,
       )
       const isFirst = currentIndex === 0
 
       // На первом треке назад нельзя
-      if (isFirst) return
+      if (isFirst || currentIndex === -1) return
 
       this.startTrack(this.playlist[currentIndex - 1])
     },
-
 
     // Закольцевать трек
     toggleLoop() {
       this.isLoop = !this.isLoop
     },
-
 
     // Перемешать треки
     toggleShuffle() {
@@ -146,14 +153,7 @@ export const usePlayerStore = defineStore('player', {
       if (!this.isShuffled) {
         // Запоминаем исходный порядок и перемешиваем копию
         this.originalPlaylist = [...this.playlist]
-
-        const shuffled = [...this.playlist]
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1))
-          ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-        }
-
-        this.playlist = shuffled
+        this.playlist = shuffleTracks(this.playlist)
         this.isShuffled = true
       } else {
         // Возвращаем исходный порядок

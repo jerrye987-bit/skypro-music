@@ -34,19 +34,20 @@ useHead({
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     { charset: 'utf-8' },
-    { name: 'description', content: 'Онлайн-музыкальный сервис Skypro.Music: слушай подборки и добавляй треки в избранное' },
+    {
+      name: 'description',
+      content:
+        'Онлайн-музыкальный сервис Skypro.Music: слушай подборки и добавляй треки в избранное',
+    },
     { property: 'og:site_name', content: 'Skypro Music' },
     { property: 'og:title', content: 'Skypro.Music' },
-    { property: 'og:description', content: 'Онлайн-музыкальный сервис: подборки треков и личный плейлист' },
+    {
+      property: 'og:description',
+      content: 'Онлайн-музыкальный сервис: подборки треков и личный плейлист',
+    },
     { property: 'og:type', content: 'website' },
   ],
   htmlAttrs: { lang: 'ru' },
-})
-
-const authStore = useAuthStore()
-
-onMounted(() => {
-  authStore.initAuth()
 })
 </script>
 
@@ -90,7 +91,6 @@ onMounted(() => {
   width: 100%;
   padding: 0 16px; /* отступы внутри, чтобы текст не прилипал к краям */
 }
-
 
 .main-grid__sidebar-right {
   grid-column: 3;
