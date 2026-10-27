@@ -10,7 +10,7 @@
         type="search"
         placeholder="Поиск по названию"
         name="search"
-      >
+      />
     </div>
   </div>
 
@@ -19,7 +19,14 @@
     <button
       v-if="hasActiveFilters"
       class="reset-btn"
-      style="margin-left: 15px; font-size: 14px; color: #aaa; background: none; border: none; cursor: pointer;"
+      style="
+        margin-left: 15px;
+        font-size: 14px;
+        color: #aaa;
+        background: none;
+        border: none;
+        cursor: pointer;
+      "
       @click="resetFilters"
     >
       Сбросить фильтр
@@ -87,10 +94,12 @@ const sortOptions = [
 ]
 
 const hasActiveFilters = computed(() => {
-  return !!activeFilter.value ||
-    Object.values(activeFilters.value).some(v => v !== null) ||
+  return (
+    !!activeFilter.value ||
+    Object.values(activeFilters.value).some((v) => v !== null) ||
     !!searchQuery.value ||
     !!sortOrder.value
+  )
 })
 
 const toggleFilter = (filter) => {

@@ -22,7 +22,7 @@ export const useCatalogTracks = () => {
 
       const allData: any = await allRes.json()
 
-      const allTracks: any[] = Array.isArray(allData) ? allData : allData?.data ?? []
+      const allTracks: any[] = Array.isArray(allData) ? allData : (allData?.data ?? [])
 
       tracks.value = allTracks.filter((t: any) => ids.includes(t._id))
     } catch (e) {

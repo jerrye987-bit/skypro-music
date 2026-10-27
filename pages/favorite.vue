@@ -1,9 +1,6 @@
 <template>
   <div>
-    <FilterControls
-      :tracks="favoriteTracks"
-      title="Мои треки"
-    />
+    <FilterControls :tracks="favoriteTracks" title="Мои треки" />
     <div v-if="isLoading" class="loading-state">
       <p>Загрузка избранного...</p>
     </div>
@@ -55,5 +52,4 @@ onMounted(async () => {
 
 const filtersStore = useFiltersStore()
 const filteredTracks = computed(() => filtersStore.filteredTracks(favoriteTracks.value))
-
 </script>
