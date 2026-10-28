@@ -55,6 +55,9 @@
 import { usePlayerStore } from '~/stores/player'
 import { ref, computed } from 'vue'
 import { useAuthFetch } from '~/composables/useAuthFetch'
+import { useFavoriteTracks } from '~/composables/useFavoriteTracks'
+
+const { setFavoriteState } = useFavoriteTracks()
 
 const props = defineProps({
   track: {
@@ -96,29 +99,30 @@ const isInFavorites = computed(() => {
 
 const toggleFavorite = async () => {
   const id = props.track?._id
-
   if (isPending.value || !id) return
+
+  const wasLiked = isInFavorites.value
+  setFavoriteState(props.track, !wasLiked) // мгновенное обновление
   isPending.value = true
 
   try {
     const res = await useAuthFetch(`/api/catalog/track/${id}/favorite/`, {
-      method: isInFavorites.value ? 'DELETE' : 'POST',
+      method: wasLiked ? 'DELETE' : 'POST',
     })
 
     if (res.status === 401) {
-      emit('need-login')
-      return
+      setFavoriteState(props.track, wasLiked) // откат
+      return navigateTo('/signin')
     }
 
     if (!res.ok) {
+      setFavoriteState(props.track, wasLiked) // откат
       const data = await res.json().catch(() => ({}))
-      const msg = data?.message || `Ошибка: ${res.status} ${res.statusText}`
-      alert(msg)
+      alert(data?.message || `Ошибка: ${res.status} ${res.statusText}`)
       return
     }
-
-    emit('refresh-favorites')
   } catch (e) {
+    setFavoriteState(props.track, wasLiked) // откат
     console.error('toggleFavorite error:', e)
     alert('Не удалось изменить избранное. Проверьте соединение.')
   } finally {

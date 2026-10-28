@@ -130,4 +130,4 @@ export const data = [
       'https://webdev-music-003b5b991590.herokuapp.com/media/music_files/Winniethemoog_-_Action_Sport_Breakbeat.mp3',
     stared_user: [],
   },
-];
+]

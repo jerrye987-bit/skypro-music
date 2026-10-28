@@ -52,6 +52,9 @@ export const usePlayerStore = defineStore('player', {
           this.isPlaying = true
         })
         .catch((e) => {
+          if ((e as DOMException)?.name === 'AbortError') {
+            return Promise.resolve()
+          }
           console.warn('Не удалось запустить аудио:', e)
           this.isPlaying = false
           return Promise.resolve()

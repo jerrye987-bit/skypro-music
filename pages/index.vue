@@ -1,9 +1,6 @@
 <template>
   <div>
-    <FilterControls
-      :tracks="tracks"
-      title="Треки"
-    />
+    <FilterControls :tracks="tracks" title="Треки" />
 
     <PlayList
       :filtered-tracks="filteredTracks"

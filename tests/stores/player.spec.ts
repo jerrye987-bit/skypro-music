@@ -75,6 +75,18 @@ describe('play / pause', () => {
     expect(store.isPlaying).toBe(false)
   })
 
+  it('play при AbortError не сбрасывает isPlaying', async () => {
+    const store = usePlayerStore()
+    store.setAudioRef({
+      play: vi.fn().mockRejectedValue(new DOMException('interrupted', 'AbortError')),
+    } as any)
+    store.isPlaying = true
+
+    await store.play()
+
+    expect(store.isPlaying).toBe(true)
+  })
+
   it('pause останавливает', () => {
     const store = usePlayerStore()
     const audio = createAudio()

@@ -1,9 +1,6 @@
 <template>
   <div>
-    <FilterControls
-      :tracks="favoriteTracks"
-      title="Мои треки"
-    />
+    <FilterControls :tracks="favoriteTracks" title="Мои треки" />
     <div v-if="isLoading" class="loading-state">
       <p>Загрузка избранного...</p>
     </div>
@@ -14,7 +11,7 @@
       @refresh-favorites="refreshFavorites"
     />
 
-    <div v-else class="empty-state">
+    <div v-else-if="!isLoading" class="empty-state">
       <h3>В избранном пока пусто 😔</h3>
       <p>Добавьте любимые треки — они появятся здесь.</p>
     </div>
@@ -26,6 +23,10 @@ import FilterControls from '~/components/FilterControls.vue'
 import PlayList from '~/components/PlayList.vue'
 import { useFavoriteTracks } from '~/composables/useFavoriteTracks'
 import { useFiltersStore } from '~/stores/filters'
+
+definePageMeta({
+  middleware: 'auth',
+})
 
 useHead({
   title: 'Мои треки | Skypro.Music',
@@ -42,18 +43,9 @@ const refreshFavorites = async () => {
 }
 
 onMounted(async () => {
-  if (!import.meta.client) return
-
-  const token = localStorage.getItem('access_token')
-
-  if (!token) {
-    return navigateTo('/signin')
-  }
-
   await fetchFavoriteTracks()
 })
 
 const filtersStore = useFiltersStore()
 const filteredTracks = computed(() => filtersStore.filteredTracks(favoriteTracks.value))
-
 </script>

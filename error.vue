@@ -1,30 +1,25 @@
 <template>
   <div class="error-page">
-    <h1 v-if="error.status === 404">Страница не найдена</h1>
+    <h1 v-if="error.statusCode === 404">Страница не найдена</h1>
     <h1 v-else>Что-то пошло не так</h1>
 
-    <!-- Показываем только то сообщение, которое ты передала через showError -->
     <p>{{ userMessage }}</p>
 
-    <NuxtLink to="/signin" class="btn-home">Попробовать снова</NuxtLink>
+    <NuxtLink to="/" class="btn-home">На главную</NuxtLink>
   </div>
 </template>
 
 <script setup>
-// Получаем объект ошибки, который автоматически передаёт Nuxt при вызове showError
 const { error } = defineProps({
   error: {
     type: Object,
     default: () => ({
       status: 500,
       message: 'Произошла ошибка. Попробуйте позже.',
-      statusText: 'Ошибка',
     }),
   },
 })
 
-// Если сервер вернул понятное сообщение — показываем его.
-// Если нет — ставим дефолтный текст.
 const userMessage = error.message || 'Произошла ошибка. Попробуйте позже.'
 </script>
 

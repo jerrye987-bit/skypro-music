@@ -1,9 +1,6 @@
 <template>
   <div>
-    <FilterControls
-      :tracks="tracks"
-      :title="categoryTitle"
-    />
+    <FilterControls :tracks="tracks" :title="categoryTitle" />
 
     <div v-if="isLoading" class="loading-state">
       <p>Загрузка треков...</p>
@@ -45,7 +42,7 @@ watch(
   (id) => {
     if (!categories[id]) return navigateTo('/')
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 const categoryTitle = computed(() => categories[categoryId.value] || '')
@@ -72,7 +69,7 @@ watch(
     if (!categories[id]) return
     await fetchCatalogTracks(id)
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 onMounted(async () => {
@@ -81,5 +78,4 @@ onMounted(async () => {
 
 const filtersStore = useFiltersStore()
 const filteredTracks = computed(() => filtersStore.filteredTracks(tracks.value))
-
 </script>

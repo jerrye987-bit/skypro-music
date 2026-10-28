@@ -20,11 +20,11 @@ const emit = defineEmits(['play', 'refresh-favorites', 'need-login'])
 defineProps({
   tracks: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   favoriteTracks: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
 })
 </script>

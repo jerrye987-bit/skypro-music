@@ -128,11 +128,7 @@ describe('сортировка', () => {
     const store = useFiltersStore()
     store.setSortOrder('asc')
     const mixed = [tracks[1], tracks[3], tracks[0]]
-    expect(store.filteredTracks(mixed).map((t) => t.name)).toEqual([
-      'Ghost',
-      'Ocean',
-      'Sunset',
-    ])
+    expect(store.filteredTracks(mixed).map((t) => t.name)).toEqual(['Ghost', 'Ocean', 'Sunset'])
   })
 })
 
